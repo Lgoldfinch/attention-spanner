@@ -10,7 +10,7 @@ service HelloWorldService {
   operations: [Hello]
 }
 
-@http(method: "POST", uri: "/{name}", code: 200)
+@http(method: "GET", uri: "/{name}", code: 200)
 operation Hello {
   input: Person,
   output: Greeting

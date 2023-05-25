@@ -35,15 +35,4 @@ bin/
 
 # IntelliJ
 .idea/
-
-# Mill
-out/
-
-# Bloop/Metals
-.bloop/
-.metals/
-metals.sbt
-.bsp/
-
-# VS-Code
-.vscode/
+.idea

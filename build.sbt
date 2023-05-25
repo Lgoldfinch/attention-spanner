@@ -1,15 +1,27 @@
+import Dependencies._
+
 ThisBuild / scalaVersion := "2.13.9"
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / organization := "com.example"
-ThisBuild / organizationName := "example"
+ThisBuild / organization := "godfinch.industries"
+ThisBuild / organizationName := "godfinch"
+
 
 lazy val root = (project in file("."))
   .enablePlugins(Smithy4sCodegenPlugin)
   .settings(
     name := "attention-spanner",
-    libraryDependencies ++= Seq(
-      "com.disneystreaming.smithy4s" %% "smithy4s-http4s" % smithy4sVersion.value,
-      "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger" % smithy4sVersion.value,
-      "org.http4s" %% "http4s-ember-server" % "0.23.16"
+    libraryDependencies ++=
+      List.concat(
+        Chimney,
+        CirceExtras,
+        DisneyStreaming.map(_ % smithy4sVersion.value), // mapping cannot be done within Dependencies
+        Enumeratum,
+        FlywayDb,
+        Fs2Circe,
+        Http4s,
+        Logging,
+        NewType,
+        PureConfig
+      ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala)
     )
-  )
+

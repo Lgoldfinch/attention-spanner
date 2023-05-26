@@ -1,4 +1,4 @@
-package com.example
+package godfinch.industries
 
 import cats.effect._
 import cats.implicits._

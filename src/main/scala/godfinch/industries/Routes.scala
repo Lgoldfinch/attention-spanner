@@ -1,10 +1,10 @@
 package godfinch.industries
 
 import cats.effect.{IO, Resource}
-import com.example.hello.HelloWorldService
 import org.http4s.HttpRoutes
 import smithy4s.http4s.SimpleRestJsonBuilder
 import cats.implicits._
+import godfinch.industries.hello.HelloWorldService
 
 object Routes {
   private val example: Resource[IO, HttpRoutes[IO]] =

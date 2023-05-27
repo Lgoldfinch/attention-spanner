@@ -1,35 +1,51 @@
 $version: "2"
 
-namespace com.example.hello
+namespace godfinch.industries.hello
 
 use alloy#simpleRestJson
 
-string Town
-string PersonName
+string TodoListName
+string TodoName
+
+list IntList {
+  member: Integer
+}
 
 @simpleRestJson
 service HelloWorldService {
   version: "1.0.0",
-  operations: [GetTodos]
+  operations: [GetTodos, CreateTodos]
 }
 
 @http(method: "GET", uri: "/todos", code: 200)
 operation GetTodos {
 //  input: Person,
-  output: Greeting
+  output: TodoList
 }
 
-//structure Person {
+//@http(method: "POST", uri: "/todos", code: 200)
+//operation DeleteTodos {
+//  input: Person,
+//}
+
+structure TodoList {
 //  @httpLabel
-//  @required
-//  name: PersonName,
-//
+  @required
+  todoListName: TodoListName
+@required
+  todos: IntList
+}
+
+@http(method: "POST", uri: "/todos", code: 200)
+operation CreateTodos {
+  input: TodoList
+}
 
 //  @httpQuery("town")
 //  town: Town
 //}
 
-structure Greeting {
-  @required
-  message: String
-}
+//structure Greeting {
+//  @required
+//  message: String
+//}

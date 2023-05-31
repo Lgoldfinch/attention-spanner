@@ -13,6 +13,7 @@ object Dependencies {
     val Log4Cats     = "2.2.0"
     val NewType      = "0.4.4"
     val PureConfig   = "0.17.4"
+    val Skunk        = "0.6.0-RC2"
 
     // Test
     val MCatsEffectTest        = "1.0.7"
@@ -46,6 +47,8 @@ object Dependencies {
     "com.disneystreaming.smithy4s" %% "smithy4s-http4s",
     "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger"
   )
+
+  val Skunk = List("org.tpolecat" %% "skunk-core").map(_ % Version.Skunk)
 
   val Enumeratum = List(
     "com.beachape" %% "enumeratum",

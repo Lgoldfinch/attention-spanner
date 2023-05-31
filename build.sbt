@@ -5,7 +5,6 @@ ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / organization := "godfinch.industries"
 ThisBuild / organizationName := "godfinch"
 
-
 lazy val root = (project in file("."))
   .enablePlugins(Smithy4sCodegenPlugin)
   .settings(
@@ -21,7 +20,8 @@ lazy val root = (project in file("."))
         Http4s,
         Logging,
         NewType,
-        PureConfig
+        PureConfig,
+        Skunk
       ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala)
     )
 

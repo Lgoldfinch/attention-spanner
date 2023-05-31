@@ -1,12 +1,11 @@
 package godfinch.industries
 
 import cats.effect.IO
-import godfinch.industries.hello.{HelloWorldService, TodoList, TodoListName}
+import godfinch.industries.hello._
 
-object HelloWorldImpl extends HelloWorldService[IO] {
+final class HelloWorldImpl[F[_]] extends HelloWorldService[F] {
 
-  override def createTodos(todoListName: TodoListName, todos: List[Int]): IO[Unit] = ???
-  override def getTodos(): IO[TodoList] = ???
+  override def createTodos(todoListName: TodoListName, todos: List[TodoName]): F[Unit] = ???
+    
+  override def getTodos(): F[TodoList] = ???
 }
-//  override def getTodos(): IO[Greeting] =
-//    Greeting("Fuckayou").pure[IO]

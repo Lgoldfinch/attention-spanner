@@ -8,7 +8,7 @@ string TodoListName
 string TodoName
 
 list IntList {
-  member: Integer
+  member: TodoName
 }
 
 @simpleRestJson

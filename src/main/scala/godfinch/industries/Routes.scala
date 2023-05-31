@@ -8,7 +8,7 @@ import godfinch.industries.hello.HelloWorldService
 
 object Routes {
   private val example: Resource[IO, HttpRoutes[IO]] =
-    SimpleRestJsonBuilder.routes(HelloWorldImpl).resource
+    SimpleRestJsonBuilder.routes(new HelloWorldImpl[IO]).resource
 
   private val docs: HttpRoutes[IO] =
     smithy4s.http4s.swagger.docs[IO](HelloWorldService)

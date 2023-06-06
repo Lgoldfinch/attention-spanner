@@ -1,6 +1,5 @@
 package godfinch.industries
 
-import cats.effect.IO
 import godfinch.industries.hello._
 
 final class HelloWorldImpl[F[_]] extends HelloWorldService[F] {

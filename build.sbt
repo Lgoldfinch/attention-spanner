@@ -6,7 +6,7 @@ ThisBuild / organization := "godfinch.industries"
 ThisBuild / organizationName := "godfinch"
 
 lazy val root = (project in file("."))
-  .enablePlugins(Smithy4sCodegenPlugin)
+  .enablePlugins(Smithy4sCodegenPlugin, JavaServerAppPackaging)
   .settings(
     name := "attention-spanner",
     libraryDependencies ++=
@@ -22,6 +22,8 @@ lazy val root = (project in file("."))
         NewType,
         PureConfig,
         Skunk
-      ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala)
-    )
-
+      ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala),
+        addCompilerPlugin ("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
+    addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
+    testFrameworks += new TestFramework("munit.Framework")
+  )

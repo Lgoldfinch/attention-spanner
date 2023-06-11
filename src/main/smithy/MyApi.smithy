@@ -14,16 +14,20 @@ list Todos {
   member: TodoName
 }
 
+list AllTodoLists {
+  member: TodoList
+}
+
 @simpleRestJson
 service HelloWorldService {
   version: "1.0.0",
-  operations: [GetTodos, CreateTodos]
+  operations: [GetAllTodoLists, CreateTodoList]
 }
 
 @http(method: "GET", uri: "/todos", code: 200)
-operation GetTodos {
+operation GetAllTodoLists {
 //  input: Person,
-  output: TodoList
+  output: AllTodoListsB
 }
 
 //@http(method: "POST", uri: "/todos", code: 200)
@@ -33,7 +37,6 @@ operation GetTodos {
 
 structure TodoList {
 //  @httpLabel
-@required
   todoListId: TodoListId
 @required
   todoListName: TodoListName
@@ -41,8 +44,13 @@ structure TodoList {
   todos: Todos
 }
 
+structure AllTodoListsB {
+  @required
+  todoLists: AllTodoLists
+}
+
 @http(method: "POST", uri: "/todos", code: 200)
-operation CreateTodos {
+operation CreateTodoList {
   input: TodoList
 }
 

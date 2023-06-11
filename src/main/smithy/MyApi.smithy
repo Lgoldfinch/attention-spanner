@@ -7,11 +7,10 @@ use alloy#uuidFormat
 
 string TodoListName
 string TodoName
-
 @uuidFormat
 string TodoListId
 
-list IntList {
+list Todos {
   member: TodoName
 }
 
@@ -39,7 +38,7 @@ structure TodoList {
 @required
   todoListName: TodoListName
 @required
-  todos: IntList
+  todos: Todos
 }
 
 @http(method: "POST", uri: "/todos", code: 200)

@@ -1,5 +1,5 @@
 services:
-  db:
+  database:
     container_name: attention-spanner-postgres
     image: postgres
     restart: always
@@ -8,12 +8,17 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     environment:
+      POSTGRES_DB: attention-spanner-postgres
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: example
+
   server:
     container_name: attention-spanner
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - database
     networks:
       - default
     ports:

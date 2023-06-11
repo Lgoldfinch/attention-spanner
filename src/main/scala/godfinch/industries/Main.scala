@@ -11,22 +11,35 @@ import cats.effect._
 import skunk._
 import skunk.implicits._
 import skunk.codec.all._
+import cats.effect._
+import skunk._
+import skunk.implicits._
+import skunk.codec.all._
+import natchez.Trace.Implicits.noop
 
 object Main extends IOApp {
 
-  override def run(args: List[String]): IO[ExitCode] = {
-
-    val thePort = port"9000"
-    val theHost = host"localhost"
-
-    val dbSetup = Session.pooled[IO](
+  val session: Resource[IO, Session[IO]] =
+    Session.single( // (2)
       host = "localhost",
       port = 5432,
-      user = "jimmy",
-      database = "world",
-      password = Some("banana"),
-      max = 16
+      user = "postgres",
+      database = "attention-spanner-postgres",
+      password = Some("example")
     )
+
+//  def run(args: List[String]): IO[ExitCode] =
+//    session.use { s => // (3)
+//      for {
+//        d <- s.unique(sql"select current_date".query(date)) // (4)
+//        _ <- IO.println(s"The current date is $d.")
+//      } yield ExitCode.Success
+//    }
+
+  override def run(args: List[String]): IO[ExitCode] = {
+
+    val thePort = port"8080"
+    val theHost = host"localhost"
 
     for {
       routes <- Routes.all
@@ -36,18 +49,17 @@ object Main extends IOApp {
       .withHost(theHost)
       .withHttpApp(routes.orNotFound)
       .build <* Resource.eval(IO.println(s"Server started on: $theHost:$thePort"))
-      session <- dbSetup
-      _ <- Resource.eval(checkPostgresConnection(session))
+//      session <- dbSetup//.evalTap(checkPostgresConnection)
     } yield ()
   }.useForever
 
-  def checkPostgresConnection(
-                               postgres: Resource[IO, Session[IO]]
-                             ): IO[Unit] =
-    postgres.use { session =>
-      session.unique(sql"select version();".query(text)).flatMap { v =>
-//        Logger[F].info(s"Connected to Postgres $v.")
-        IO.println(s"Connected to Postgres $v.")
-      }
-    }
+//  def checkPostgresConnection(
+//                               postgres: Resource[IO, Session[IO]]
+//                             ): IO[Unit] =
+//    postgres.use { session =>
+//      session.unique(sql"select version();".query(text)).flatMap { v =>
+////        Logger[F].info(s"Connected to Postgres $v.")
+//        IO.println(s"Connected to Postgres $v.")
+//      }
+//    }
 }

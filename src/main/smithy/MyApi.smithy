@@ -3,9 +3,13 @@ $version: "2"
 namespace godfinch.industries.hello
 
 use alloy#simpleRestJson
+use alloy#uuidFormat
 
 string TodoListName
 string TodoName
+
+@uuidFormat
+string TodoListId
 
 list IntList {
   member: TodoName
@@ -30,7 +34,9 @@ operation GetTodos {
 
 structure TodoList {
 //  @httpLabel
-  @required
+@required
+  todoListId: TodoListId
+@required
   todoListName: TodoListName
 @required
   todos: IntList

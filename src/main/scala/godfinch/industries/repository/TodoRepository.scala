@@ -1,7 +1,7 @@
 package godfinch.industries.repository
 
 import cats.Applicative
-import godfinch.industries.hello.{TodoList, TodoListId, TodoListName, TodoName}
+import godfinch.industries.hello.{AllTodoListsB, TodoList, TodoListId, TodoListName, TodoName}
 
 import java.util.UUID
 import cats.implicits._
@@ -9,7 +9,7 @@ import cats.implicits._
 trait TodoRepository[F[_]] {
   def insertTodoList(todoList: TodoList): F[Unit]
 
-  def getAllTodoLists: F[List[TodoList]]
+  def getAllTodoLists: F[AllTodoListsB]
 
   def getTodoList(todoListId: TodoListId): F[TodoList]
 
@@ -24,19 +24,24 @@ final class TodoRepositoryImpl[F[_]]()(implicit A: Applicative[F]) extends TodoR
 
   override def insertTodoList(todoList: TodoList): F[Unit] = A.unit
 
-  override def getAllTodoLists: F[List[TodoList]] = {
+  override def getAllTodoLists: F[AllTodoListsB] = {
     val todos = List(TodoName("Bring wallet"), TodoName("Bring laptop"), TodoName("Bring Keys"))
 
+    AllTodoListsB(
     List(
       TodoList(
-        todoId,
         todoName,
-        todos)
+        todos,
+        None,
+        )
+    )
     ).pure[F]
   }
 
   override def getTodoList(todoListId: TodoListId): F[TodoList] = TodoList(
-    todoId, todoName, todos
+    todoName,
+    todos,
+    None
   ).pure[F]
 
   override def updateTodoList(todoList: TodoList): F[Unit] = A.unit

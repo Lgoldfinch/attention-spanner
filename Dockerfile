@@ -12,11 +12,11 @@ COPY . ./
 RUN rm -rf ~/.sbt/boot/ ~/.sbt/preloaded/ ~/.ivy2 ~/.cache/coursier/
 
 # Build the project with SBT
-RUN sbt 'universal:stage'
+#RUN sbt 'universal:stage'
 
 # Stage 2
 FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
 
 WORKDIR /attention-spanner
 COPY --from=builder /build/target/universal/stage /attention-spanner
-ENTRYPOINT ["/bin/sh", "-c", "/attention-spanner*/bin/attention-spanner"]
+ENTRYPOINT ["/bin/sh", "-c", "/attention-spanner/bin/attention-spanner"]

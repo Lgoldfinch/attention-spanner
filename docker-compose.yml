@@ -8,8 +8,8 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     environment:
-      POSTGRES_DB: attention-spanner-postgres
       POSTGRES_USER: postgres
+#      POSTGRES_DB: attention
       POSTGRES_PASSWORD: example
 
   server:

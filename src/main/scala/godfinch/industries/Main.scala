@@ -12,10 +12,13 @@ import skunk._
 import skunk.implicits._
 import skunk.codec.all._
 import cats.effect._
+import godfinch.industries.repository.SqlMigrator
 import skunk._
 import skunk.implicits._
 import skunk.codec.all._
 import natchez.Trace.Implicits.noop
+import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.slf4j.Slf4jLogger
 
 object Main extends IOApp {
 
@@ -35,6 +38,7 @@ object Main extends IOApp {
     val theHost = host"localhost"
 
     for {
+      implicit0(logger: Logger[IO]) <- Resource.eval(Slf4jLogger.create[IO])
       routes <- Routes.all
       _      <- EmberServerBuilder
       .default[IO]
@@ -43,6 +47,7 @@ object Main extends IOApp {
       .withHttpApp(routes.orNotFound)
       .build <* Resource.eval(IO.println(s"Server started on: $theHost:$thePort"))
       _ <- session.evalTap(checkPostgresConnection)
+      _ <- Resource.eval(new SqlMigrator[IO].run)
     } yield ()
   }.useForever
 

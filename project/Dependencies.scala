@@ -12,6 +12,7 @@ object Dependencies {
     val Http4s       = "0.23.6" // look at version imported by Tapir
     val Log4Cats     = "2.2.0"
     val NewType      = "0.4.4"
+    val PostgresJdbc            = "42.5.4" // Flyway needs this
     val PureConfig   = "0.17.4"
     val Skunk        = "0.6.0-RC2"
 
@@ -56,8 +57,8 @@ object Dependencies {
   ).map(_ % Version.Enumeratum)
 
   val FlywayDb = List(
-    "org.flywaydb"   % "flyway-core" % Version.FlywayDb
-//    "org.postgresql" % "postgresql"  % Version.PostgresJdbc
+    "org.flywaydb"   % "flyway-core" % Version.FlywayDb,
+    "org.postgresql" % "postgresql"  % Version.PostgresJdbc
   )
 
   val Fs2Circe = List(

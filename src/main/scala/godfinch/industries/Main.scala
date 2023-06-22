@@ -12,6 +12,7 @@ import skunk._
 import skunk.implicits._
 import skunk.codec.all._
 import cats.effect._
+import cats.effect.unsafe.implicits.global
 import godfinch.industries.repository.SqlMigrator
 import skunk._
 import skunk.implicits._
@@ -47,7 +48,8 @@ object Main extends IOApp {
       .withHttpApp(routes.orNotFound)
       .build <* Resource.eval(IO.println(s"Server started on: $theHost:$thePort"))
       _ <- session.evalTap(checkPostgresConnection)
-      _ <- Resource.eval(new SqlMigrator[IO].run)
+      sqlMigrator = new SqlMigrator[IO]
+      _ <- Resource.eval(sqlMigrator.run)
     } yield ()
   }.useForever
 
@@ -57,7 +59,7 @@ object Main extends IOApp {
     postgres.use { session =>
       session.unique(sql"select version();".query(text)).flatMap { v =>
 //        Logger[F].info(s"Connected to Postgres $v.")
-        IO.println(s"Connected to Postgres $v.")
+        IO.println(s"Connected to Postgres $v. *******")
       }
     }
 }

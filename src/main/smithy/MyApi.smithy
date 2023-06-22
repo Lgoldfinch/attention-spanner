@@ -37,6 +37,7 @@ operation GetAllTodoLists {
 
 structure TodoList {
 //  @httpLabel
+@required
   todoListId: TodoListId
 @required
   todoListName: TodoListName

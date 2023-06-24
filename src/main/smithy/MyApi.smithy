@@ -4,11 +4,13 @@ namespace godfinch.industries.hello
 
 use alloy#simpleRestJson
 use alloy#uuidFormat
+use alloy#dateFormat
 
 string TodoListName
 string TodoName
 @uuidFormat
 string TodoListId
+timestamp TimeCreated
 
 list Todos {
   member: TodoName
@@ -42,7 +44,9 @@ structure TodoList {
 @required
   todoListName: TodoListName
 @required
-  todos: Todos
+  createdTimestamp: TimeCreated,
+@required
+todos: Todos
 }
 
 structure AllTodoListsB {

@@ -3,6 +3,7 @@ package godfinch.industries
 import godfinch.industries.hello._
 import godfinch.industries.repository.TodoRepository
 import smithy4s.Timestamp
+import godfinch.industries.repository.model.TodoList
 
 import java.time.Instant
 import java.util.UUID

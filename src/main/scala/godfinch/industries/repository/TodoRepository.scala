@@ -7,9 +7,7 @@ import java.util.UUID
 import skunk._
 import skunk.implicits._
 import godfinch.industries.repository.model.Codecs._
-import cats.implicits._
-import cats.effect._
-import cats.syntax.all._
+import godfinch.industries.repository.model.TodoList
 
 trait TodoRepository[F[_]] {
   def insertTodoList(todoList: TodoList): F[Unit]

@@ -39,17 +39,17 @@ object Main extends IOApp {
     val theHost = host"localhost"
 
     for {
+      postgres <- session.evalTap(checkPostgresConnection)
       implicit0(logger: Logger[IO]) <- Resource.eval(Slf4jLogger.create[IO])
-      routes <- Routes.all
+      sqlMigrator = new SqlMigrator[IO]
+      _ <- Resource.eval(sqlMigrator.run)
+      routes <- Routes.all(postgres)
       _      <- EmberServerBuilder
       .default[IO]
       .withPort(thePort)
       .withHost(theHost)
       .withHttpApp(routes.orNotFound)
       .build <* Resource.eval(IO.println(s"Server started on: $theHost:$thePort"))
-      _ <- session.evalTap(checkPostgresConnection)
-      sqlMigrator = new SqlMigrator[IO]
-      _ <- Resource.eval(sqlMigrator.run)
     } yield ()
   }.useForever
 

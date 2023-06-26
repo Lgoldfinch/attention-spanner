@@ -3,7 +3,6 @@ package godfinch.industries.repository
 import cats.Applicative
 import cats.effect.Resource
 import godfinch.industries.hello.{AllTodoListsB, TodoList, TodoListId, TodoListName, TodoName}
-
 import java.util.UUID
 import skunk._
 import skunk.implicits._
@@ -23,15 +22,16 @@ trait TodoRepository[F[_]] {
 }
 
 final class TodoRepositoryImpl[F[_]](postgres: Resource[F, Session[F]])(implicit A: Applicative[F]) extends TodoRepository[F] {
-  val todoListDecoder: Decoder[TodoList] =  (todoListId *: todoListName *: timeCreated2 *: todoNames).to[TodoList]
+  val todoListDecoder: Decoder[TodoList] =  (todoListName *: timeCreated2 *: todoNames).to[TodoList]
 // we need a DB specific implementation or we need to add creation timestamp to the smithy files
-  val getTodoListById: Query[TodoListId *: EmptyTuple, TodoList] =
+
+  val getTodoListById =
    sql"""
       select id, name, created_timestamp, tasks from todos
       where id = $todoListId
       """.query(todoListDecoder)
 
- val todoId = TodoListId(UUID.randomUUID())
+  val todoId = TodoListId(UUID.randomUUID())
 
   val todoName = TodoListName("Leaving for work")
 

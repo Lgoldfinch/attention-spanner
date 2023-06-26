@@ -26,7 +26,7 @@ object Codecs {
 
 //  val timeCreated: Codec[TimeCreated] = smithyTimestamp.imap[TimeCreated](TimeCreated(_))((timeCreated => Timestamp.parse(timeCreated.value, TimestampFormat.DATE_TIME)))
 
-  val timeCreated2 = instant.imap[TimeCreated](ins => Timestamp.fromInstant(ins))(asd => asd.value.toInstant) // What on gods green earth is going on here?!?!?!
+  val timeCreated2 = instant.imap[TimeCreated](Timestamp.fromInstant)(_.value.toInstant) // What on gods green earth is going on here?!?!?!
 
   //  val timeCreated: Codec[TimeCreated] = smithyTimestamp.imap[TimeCreated](TimeCreated(_))((timeCreated => Timestamp.parse(timeCreated.value, TimestampFormat.DATE_TIME)))
   val todoListName: Codec[TodoListName] = text.imap[TodoListName](TodoListName(_))(_.value)

@@ -4,7 +4,6 @@ namespace godfinch.industries.hello
 
 use alloy#simpleRestJson
 use alloy#uuidFormat
-use alloy#dateFormat
 
 string TodoListName
 string TodoName
@@ -17,7 +16,7 @@ list Todos {
 }
 
 list AllTodoLists {
-  member: TodoList
+  member: CreateTodoListRequest
 }
 
 @simpleRestJson
@@ -37,10 +36,10 @@ operation GetAllTodoLists {
 //  input: Person,
 //}
 
-structure TodoList {
+structure CreateTodoListRequest {
 //  @httpLabel
-@required
-  todoListId: TodoListId
+//@required
+//  todoListId: TodoListId
 @required
   todoListName: TodoListName
 @required
@@ -56,7 +55,7 @@ structure AllTodoListsB {
 
 @http(method: "POST", uri: "/todos", code: 200)
 operation CreateTodoList {
-  input: TodoList
+  input: CreateTodoListRequest
 }
 
 //  @httpQuery("town")

@@ -36,6 +36,17 @@ operation GetAllTodoLists {
 //  input: Person,
 //}
 
+structure TodoList {
+  @required
+    todoListId: TodoListId
+  @required
+  todoListName: TodoListName
+  @required
+  createdTimestamp: TimeCreated,
+  @required
+  todos: Todos
+}
+
 structure CreateTodoListRequest {
 //  @httpLabel
 //@required

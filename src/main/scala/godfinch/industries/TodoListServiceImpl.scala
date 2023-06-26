@@ -9,7 +9,7 @@ import java.util.UUID
 
 final class TodoListServiceImpl[F[_]](todoRepository: TodoRepository[F]) extends HelloWorldService[F] {
 
-  override def createTodoList(todoListName: TodoListName, todos: List[TodoName]): F[Unit] =
+  override def createTodoList(todoListName: TodoListName, createdTimestamp: TimeCreated, todos: List[TodoName]): F[Unit] =
     todoRepository
       .insertTodoList(
         TodoList(TodoListId(UUID.randomUUID()), todoListName, TimeCreated(Timestamp.fromInstant(Instant.now)), todos)

@@ -22,7 +22,17 @@ list AllTodoLists {
 @simpleRestJson
 service HelloWorldService {
   version: "1.0.0",
-  operations: [GetAllTodoLists, CreateTodoList]
+  operations: [GetTodoList, GetAllTodoLists, CreateTodoList]
+}
+
+@http(method: "GET", uri: "/todo/{id}", code: 200)
+operation GetTodoList {
+  input := {
+    @required
+    @httpLabel
+    id: TodoListId
+  }
+  output: TodoList
 }
 
 @http(method: "GET", uri: "/todos", code: 200)
@@ -36,6 +46,17 @@ operation GetAllTodoLists {
 //  input: Person,
 //}
 
+structure TodoList {
+  @required
+  id: TodoListId
+  @required
+  todoName: TodoName
+  @required
+  createdTimestamp: TimeCreated
+  @required
+  todos: Todos
+}
+
 structure CreateTodoListRequest {
 //  @httpLabel
 //@required
@@ -43,7 +64,7 @@ structure CreateTodoListRequest {
 @required
   todoListName: TodoListName
 @required
-  createdTimestamp: TimeCreated,
+  createdTimestamp: TimeCreated
 @required
 todos: Todos
 }

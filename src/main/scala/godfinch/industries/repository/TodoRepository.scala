@@ -1,13 +1,14 @@
 package godfinch.industries.repository
 
+import cats.Applicative
 import cats.effect.{MonadCancelThrow, Resource}
 import godfinch.industries.hello._
 import cats.implicits._
+
 import java.util.UUID
 import skunk._
 import skunk.implicits._
 import godfinch.industries.repository.model.Codecs._
-import godfinch.industries.repository.model.TodoList
 
 trait TodoRepository[F[_]] {
   def insertTodoList(todoList: TodoList): F[Unit]
@@ -20,10 +21,6 @@ trait TodoRepository[F[_]] {
 }
 
 final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
-  val todoListDecoder: Decoder[TodoList] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoList]
-
-
-
   val todoId = TodoListId(UUID.randomUUID())
 
 import TodoRepositoryImpl._
@@ -60,7 +57,7 @@ import TodoRepositoryImpl._
 //    None
 //  ).pure[F]
 
-  override def updateTodoList(todoList: TodoList): F[Unit] = A.unit
+  override def updateTodoList(todoList: TodoList): F[Unit] = Applicative[F].unit
 }
 
 object TodoRepositoryImpl {
@@ -73,6 +70,8 @@ object TodoRepositoryImpl {
         id *: todoName *: timeCreated *: todos *: EmptyTuple
     }
   }
+
+  val todoListDecoder: Decoder[TodoList] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoList]
 
   val getTodoListById =
     sql"""

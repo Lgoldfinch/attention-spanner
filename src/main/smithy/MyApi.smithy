@@ -32,7 +32,11 @@ operation GetTodoList {
     @httpLabel
     id: TodoListId
   }
-  output: TodoList
+  output: GetTodoListResponse
+}
+
+structure GetTodoListResponse {
+   todoList: TodoList
 }
 
 @http(method: "GET", uri: "/todos", code: 200)
@@ -50,7 +54,7 @@ structure TodoList {
   @required
   id: TodoListId
   @required
-  todoName: TodoName
+  todoName: TodoListName
   @required
   createdTimestamp: TimeCreated
   @required

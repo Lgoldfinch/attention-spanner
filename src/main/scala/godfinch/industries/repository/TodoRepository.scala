@@ -15,7 +15,7 @@ trait TodoRepository[F[_]] {
 
   def getAllTodoLists: F[AllTodoListsB]
 
-  def getTodoList(todoListId: TodoListId): F[TodoList]
+  def getTodoList(todoListId: TodoListId): F[Option[TodoList]]
 
   def updateTodoList(todoList: TodoList): F[Unit]
 }
@@ -41,21 +41,13 @@ import TodoRepositoryImpl._
 ???
   }
 
-  override def getTodoList(todoListId: TodoListId): F[TodoList] = {
+  override def getTodoList(todoListId: TodoListId): F[Option[TodoList]] = {
     ???
-//     postgres.use{ session =>
-
-//       val helo = session.prepare(getTodoListByTodoListId)
-//         .flatMap {
-//         q =>
-//       }
-//     }
+    postgres.use { _.prepare(getTodoListById).flatMap {
+        _.option(todoListId)
+      }
+    }
   }
-//    TodoList(
-//    todoName,
-//    todos,
-//    None
-//  ).pure[F]
 
   override def updateTodoList(todoList: TodoList): F[Unit] = Applicative[F].unit
 }
@@ -73,7 +65,7 @@ object TodoRepositoryImpl {
 
   val todoListDecoder: Decoder[TodoList] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoList]
 
-  val getTodoListById =
+  val getTodoListById: Query[TodoListId, TodoList] =
     sql"""
       select id, name, created_timestamp, tasks from todos
       where id = $todoListId

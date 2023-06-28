@@ -17,5 +17,5 @@ final class TodoListServiceImpl[F[_]](todoRepository: TodoRepository[F]) extends
 
   override def getAllTodoLists(): F[AllTodoListsB] = todoRepository.getAllTodoLists
 
-  override def getTodoList(todoListId: TodoListId): F[TodoList] = todoRepository.getTodoList(todoListId)
+  override def getTodoList(todoListId: TodoListId): F[Option[TodoList]] = todoRepository.getTodoList(todoListId)
 }

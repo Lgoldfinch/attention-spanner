@@ -36,6 +36,7 @@ operation GetTodoList {
 }
 
 structure GetTodoListResponse {
+//  @required?
    todoList: TodoList
 }
 

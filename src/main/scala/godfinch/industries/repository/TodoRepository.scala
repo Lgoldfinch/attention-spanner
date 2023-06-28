@@ -41,13 +41,11 @@ import TodoRepositoryImpl._
 ???
   }
 
-  override def getTodoList(todoListId: TodoListId): F[Option[TodoList]] = {
-    ???
+  override def getTodoList(todoListId: TodoListId): F[Option[TodoList]] =
     postgres.use { _.prepare(getTodoListById).flatMap {
         _.option(todoListId)
       }
     }
-  }
 
   override def updateTodoList(todoList: TodoList): F[Unit] = Applicative[F].unit
 }

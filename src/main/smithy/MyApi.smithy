@@ -69,8 +69,6 @@ structure CreateTodoListRequest {
 @required
   todoListName: TodoListName
 @required
-  createdTimestamp: TimeCreated
-@required
 todos: Todos
 }
 

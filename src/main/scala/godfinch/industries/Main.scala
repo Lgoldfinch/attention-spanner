@@ -44,6 +44,7 @@ object Main extends IOApp {
       sqlMigrator = new SqlMigrator[IO]
       _ <- Resource.eval(sqlMigrator.run)
       routes <- Routes.all(postgres)
+
       _      <- EmberServerBuilder
       .default[IO]
       .withPort(thePort)

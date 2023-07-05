@@ -10,8 +10,6 @@ import skunk.Session
 
 object Routes {
 
-  private val docs: HttpRoutes[IO] =
-    smithy4s.http4s.swagger.docs[IO](HelloWorldService)
 
   def all(postgres: Resource[IO, Session[IO]]): Resource[IO, HttpRoutes[IO]] = {
     val todoRepository = new TodoRepositoryImpl[IO](postgres)
@@ -19,6 +17,10 @@ object Routes {
 
     val example: Resource[IO, HttpRoutes[IO]] =
       SimpleRestJsonBuilder.routes(todoListService).resource
+
+     val docs: HttpRoutes[IO] =
+      smithy4s.http4s.swagger.docs[IO](todoListService)
+
 
     example.map(_ <+> docs)
   }

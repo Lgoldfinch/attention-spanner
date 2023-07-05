@@ -13,14 +13,13 @@ object Routes {
 
   def all(postgres: Resource[IO, Session[IO]]): Resource[IO, HttpRoutes[IO]] = {
     val todoRepository = new TodoRepositoryImpl[IO](postgres)
-    val todoListService = new TodoListServiceImpl[IO](todoRepository)
+    val todoListService: TodoListServiceImpl[IO] = new TodoListServiceImpl[IO](todoRepository)
 
     val example: Resource[IO, HttpRoutes[IO]] =
       SimpleRestJsonBuilder.routes(todoListService).resource
 
      val docs: HttpRoutes[IO] =
-      smithy4s.http4s.swagger.docs[IO](todoListService)
-
+      smithy4s.http4s.swagger.docs[IO](HelloWorldService)
 
     example.map(_ <+> docs)
   }

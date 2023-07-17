@@ -20,7 +20,7 @@ list AllTodoLists {
 }
 
 @simpleRestJson
-service HelloWorldService {
+service TodoListService {
   version: "1.0.0",
   operations: [GetTodoList, GetAllTodoLists, CreateTodoList]
 }
@@ -63,9 +63,6 @@ structure TodoList {
 }
 
 structure CreateTodoListRequest {
-//  @httpLabel
-//@required
-//  todoListId: TodoListId
 @required
   todoListName: TodoListName
 @required
@@ -82,11 +79,3 @@ operation CreateTodoList {
   input: CreateTodoListRequest
 }
 
-//  @httpQuery("town")
-//  town: Town
-//}
-
-//structure Greeting {
-//  @required
-//  message: String
-//}

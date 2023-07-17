@@ -16,7 +16,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console](todoRepository: TodoReposi
     val id = TodoListId(UUID.randomUUID())
     todoRepository
       .insertTodoList(
-        TodoList(TodoListId(UUID.randomUUID()), todoListName, TimeCreated(Timestamp.fromInstant(Instant.now)), todos)
+        TodoList(id, todoListName, TimeCreated(Timestamp.fromInstant(Instant.now)), todos)
       ) >> Console[F].println(id)
   }
 

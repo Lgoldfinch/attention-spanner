@@ -36,7 +36,7 @@ object Main extends IOApp {
   override def run(args: List[String]): IO[ExitCode] = {
 
     val thePort = port"8080"
-    val theHost = host"localhost"
+    val theHost = host"0.0.0.0"
 
     for {
       postgres <- session.evalTap(checkPostgresConnection)

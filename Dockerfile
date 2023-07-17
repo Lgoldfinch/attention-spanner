@@ -1,5 +1,5 @@
 # Stage 1
-FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1 as builder
+FROM hseeberger/scala-sbt:11.0.10_1.4.9_2.12.13 as builder
 
 LABEL authors="lg"
 
@@ -15,7 +15,7 @@ RUN rm -rf ~/.sbt/boot/ ~/.sbt/preloaded/ ~/.ivy2 ~/.cache/coursier/
 #RUN sbt 'universal:stage'
 
 # Stage 2
-FROM hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+FROM hseeberger/scala-sbt:11.0.10_1.4.9_2.12.13
 
 WORKDIR /attention-spanner
 COPY --from=builder /build/target/universal/stage /attention-spanner

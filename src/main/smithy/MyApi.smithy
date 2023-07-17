@@ -1,6 +1,6 @@
 $version: "2"
 
-namespace godfinch.industries.hello
+namespace godfinch.industries.attention.spanner
 
 use alloy#simpleRestJson
 use alloy#uuidFormat
@@ -19,10 +19,46 @@ list AllTodoLists {
   member: CreateTodoListRequest
 }
 
+structure TodoList {
+  @required
+  id: TodoListId
+  @required
+  todoName: TodoListName
+  @required
+  createdTimestamp: TimeCreated
+  @required
+  todos: Todos
+}
+
 @simpleRestJson
 service TodoListService {
   version: "1.0.0",
-  operations: [GetTodoList, GetAllTodoLists, CreateTodoList]
+  operations: [CreateTodoList, DeleteTodoList, GetTodoList, GetAllTodoLists, ]
+}
+
+structure CreateTodoListRequest {
+  @required
+  todoListName: TodoListName
+  @required
+  todos: Todos
+}
+
+@http(method: "POST", uri: "/todos", code: 200)
+operation CreateTodoList {
+  input: CreateTodoListRequest
+}
+
+@http(method: "DELETE", uri: "/todos/{id}", code: 200)
+operation DeleteTodoList {
+  input := {
+    @required
+    @httpLabel
+    id: TodoListId
+  }
+}
+
+structure GetTodoListResponse {
+  todoList: TodoList
 }
 
 @http(method: "GET", uri: "/todo/{id}", code: 200)
@@ -35,47 +71,13 @@ operation GetTodoList {
   output: GetTodoListResponse
 }
 
-structure GetTodoListResponse {
-//  @required?
-   todoList: TodoList
-}
-
-@http(method: "GET", uri: "/todos", code: 200)
-operation GetAllTodoLists {
-//  input: Person,
-  output: AllTodoListsB
-}
-
-//@http(method: "POST", uri: "/todos", code: 200)
-//operation DeleteTodos {
-//  input: Person,
-//}
-
-structure TodoList {
-  @required
-  id: TodoListId
-  @required
-  todoName: TodoListName
-  @required
-  createdTimestamp: TimeCreated
-  @required
-  todos: Todos
-}
-
-structure CreateTodoListRequest {
-@required
-  todoListName: TodoListName
-@required
-todos: Todos
-}
-
-structure AllTodoListsB {
+structure GetAllTodoListsResponse {
   @required
   todoLists: AllTodoLists
 }
 
-@http(method: "POST", uri: "/todos", code: 200)
-operation CreateTodoList {
-  input: CreateTodoListRequest
-}
 
+@http(method: "GET", uri: "/todos", code: 200)
+operation GetAllTodoLists {
+  output: GetAllTodoListsResponse
+}

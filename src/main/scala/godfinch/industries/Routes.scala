@@ -4,7 +4,7 @@ import cats.effect.{IO, Resource}
 import org.http4s.HttpRoutes
 import smithy4s.http4s.SimpleRestJsonBuilder
 import cats.implicits._
-import godfinch.industries.hello.HelloWorldService
+import godfinch.industries.attention.spanner.TodoListService
 import godfinch.industries.repository.TodoRepositoryImpl
 import skunk.Session
 
@@ -19,7 +19,7 @@ object Routes {
       SimpleRestJsonBuilder.routes(todoListService).resource
 
      val docs: HttpRoutes[IO] =
-      smithy4s.http4s.swagger.docs[IO](HelloWorldService)
+      smithy4s.http4s.swagger.docs[IO](TodoListService)
 
     example.map(_ <+> docs)
   }

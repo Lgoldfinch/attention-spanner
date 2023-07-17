@@ -1,11 +1,10 @@
 package godfinch.industries.repository.model
 
-import godfinch.industries.hello.{TimeCreated, TodoListId, TodoListName, TodoName}
+import godfinch.industries.attention.spanner.{TimeCreated, TodoListId, TodoListName, TodoName}
 import skunk.Codec
 import skunk.codec.all.{text, timestamp, uuid}
 import skunk.data.{Arr, Type}
 import cats.implicits._
-import smithy.api.TimestampFormat
 import smithy4s.Timestamp
 
 import java.time.{Instant, LocalDateTime, ZoneOffset}

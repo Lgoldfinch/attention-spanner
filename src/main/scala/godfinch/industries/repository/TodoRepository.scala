@@ -66,14 +66,10 @@ private object TodoRepositoryImpl {
     }
   }
 
-  val deleteTodoListCommand: Command[TodoListId *: EmptyTuple] = {
+  val deleteTodoListCommand: Command[TodoListId *: EmptyTuple] =
     sql"""
         delete from todos where id = $todoListId
-       """.command.contramap {
-      case id *: EmptyTuple =>
-        id *: EmptyTuple
-    }
-  }
+       """.command
 
   val getAllTodoListsQuery: Query[Void, TodoList] =
     sql"""

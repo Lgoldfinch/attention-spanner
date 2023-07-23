@@ -59,7 +59,6 @@ object Main extends IOApp {
                              ): IO[Unit] =
     postgres.use { session =>
       session.unique(sql"select version();".query(text)).flatMap { v =>
-//        Logger[F].info(s"Connected to Postgres $v.")
         IO.println(s"Connected to Postgres $v. *******")
       }
     }

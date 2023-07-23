@@ -7,16 +7,16 @@ import cats.implicits._
 
 final class SqlMigrator[F[_]](implicit logger: Logger[F], S: Sync[F]) {
   def run: F[Unit] = {
+    val url = "jdbc:postgresql://database:5432/postgres"
+
     for {
-      _ <- logger.info("Hello?")
-      _ <- S.delay(Flyway
+      _ <- S.blocking(Flyway
         .configure()
-        .dataSource("jdbc:postgresql://database:5432/postgres", "postgres", "example")
-//                  .schemas("attention-spanner")
+        .dataSource(url, "postgres", "example")
         .load()
         .migrate())
-      _ <- logger.info("Running the database migrations. ^^^^^^^^^^^^^^^^^") >>
-            logger.info(s"schema: postgres; url: jdbc:postgresql://database:5432/postgres")
+      _ <- logger.info("Running the database migrations.") >>
+            logger.info(s"schema: postgres; url: $url")
     } yield ()
   }
 }

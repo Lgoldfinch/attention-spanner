@@ -24,7 +24,10 @@ final class TodoListServiceImpl[F[_]: Monad: Console](todoRepository: TodoReposi
     todoRepository.deleteTodoList(todoListId)
   }
 
-  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
+  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoRepository.getAllTodoLists.map(
+    _.map { case TodoList(id, name, createdTimestamp, todos) => CreateTodoListRequest(todo) }
+  )
+
 
   override def getTodoList(id: TodoListId): F[GetTodoListResponse] = todoRepository.getTodoList(id).map(GetTodoListResponse(_))
 }

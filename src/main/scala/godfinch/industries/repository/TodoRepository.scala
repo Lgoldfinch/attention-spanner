@@ -47,12 +47,16 @@ import TodoRepositoryImpl._
   }
 
   override def getTodoList(todoListId: TodoListId): F[Option[TodoList]] =
-    postgres.use { _.prepare(getTodoListQuery).flatMap {
-        _.option(todoListId)
-      }
-    }
+    postgres.use(_.prepare(getTodoListQuery).flatMap(
+      _.option(todoListId)
+    )
+  )
 
-  override def updateTodoList(todoList: TodoList): F[Unit] = Applicative[F].unit
+  override def updateTodoList(todoList: TodoList): F[Unit] =
+    postgres.use(_.prepare(updateTodoListCommand).flatMap(
+      _.execute(todoList *: EmptyTuple)
+      )
+    )
 }
 
 private object TodoRepositoryImpl {
@@ -83,4 +87,14 @@ private object TodoRepositoryImpl {
       select id, name, created_timestamp, tasks from todos
       where id = $todoListId
       """.query(todoListDecoder)
+
+  val updateTodoListCommand: Command[TodoList *: EmptyTuple] =
+    sql"""
+         update todos set
+           id = $todoListId AND
+           name = $todoListName AND
+           created_timestamp = $timeCreated AND
+           tasks = $todoNames
+       """.command
+
 }

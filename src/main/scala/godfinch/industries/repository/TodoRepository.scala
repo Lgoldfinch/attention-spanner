@@ -22,16 +22,16 @@ trait TodoRepository[F[_]] {
 
 final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
 import TodoRepositoryImpl._
-
   override def insertTodoList(todoList: TodoListDb): F[Unit] =
-        postgres.use(_.prepare(insertTodoListCommand).flatMap (
+        postgres.use(
+          _.prepare(insertTodoListCommand).flatMap (
             _.execute(todoList).void
           )
       )
 
 
-  override def deleteTodoList(todoListId: TodoListId): F[Unit] = postgres.use( session =>
-      session.prepare(deleteTodoListCommand).flatMap {
+  override def deleteTodoList(todoListId: TodoListId): F[Unit] = postgres.use(
+    _.prepare(deleteTodoListCommand).flatMap {
         _.execute(todoListId).void
       }
   )
@@ -62,25 +62,25 @@ private object TodoRepositoryImpl {
 
   val insertTodoListCommand: Command[TodoListDb] = {
     sql"""
-        insert into todos (id, name, created_timestamp, tasks)
-        values $todoListEncoder
+        INSERT INTO todos (id, name, created_timestamp, tasks)
+        VALUES $todoListEncoder
        """.command
   }
 
   val deleteTodoListCommand: Command[TodoListId] =
     sql"""
-        delete from todos where id = $todoListId
+        DELETE FROM todos WHERE id = $todoListId
        """.command
 
   val getAllTodoListsQuery: Query[Void, TodoListDb] =
     sql"""
-         select id, name, created_timestamp, tasks from todos
+         SELECT id, name, created_timestamp, tasks FROM todos
        """.query(todoListDbCodec)
 
   val getTodoListQuery: Query[TodoListId, TodoListDb] =
     sql"""
-      select id, name, created_timestamp, tasks from todos
-      where id = $todoListId
+      SELECT id, name, created_timestamp, tasks FROM todos
+      WHERE id = $todoListId
       """.query(todoListDbCodec)
 
   val updateTodoListCommand: Command[TodoListDb] =

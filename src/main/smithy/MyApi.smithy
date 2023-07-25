@@ -16,10 +16,10 @@ list Todos {
 }
 
 list AllTodoLists {
-  member: CreateTodoListRequest
+  member: TodoListDb
 }
 
-structure TodoList {
+structure TodoListDb {
   @required
   id: TodoListId
   @required
@@ -36,7 +36,7 @@ service TodoListService {
   operations: [CreateTodoList, DeleteTodoList, GetTodoList, GetAllTodoLists, ]
 }
 
-structure CreateTodoListRequest {
+structure TodoList {
   @required
   todoListName: TodoListName
   @required
@@ -45,7 +45,7 @@ structure CreateTodoListRequest {
 
 @http(method: "POST", uri: "/todos", code: 200)
 operation CreateTodoList {
-  input: CreateTodoListRequest
+  input: TodoList
 }
 
 @http(method: "DELETE", uri: "/todos/{id}", code: 200)

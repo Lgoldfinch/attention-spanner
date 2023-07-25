@@ -15,10 +15,11 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
 
   override def createTodoList(todoListName: TodoListName, todos: List[TodoName]): F[Unit] = {
     val id = TodoListId(UUID.randomUUID())
-    todoRepository
-      .insertTodoList(
-        TodoListDb(id, todoListName, TimeCreated(Timestamp.fromInstant(Instant.now)), todos)
-      ) >> Console[F].println(id)
+    for {
+      now <- Clock[F].realTimeInstant
+      _   <- todoRepository.insertTodoList(TodoListDb(id, todoListName, TimeCreated(Timestamp.fromInstant(now)), todos))
+      _   <- Console[F].println(id)
+    } yield ()
   }
 
   override def deleteTodoList(todoListId: TodoListId): F[Unit] = {

@@ -33,7 +33,7 @@ structure TodoListDb {
 @simpleRestJson
 service TodoListService {
   version: "1.0.0",
-  operations: [CreateTodoList, DeleteTodoList, GetTodoList, GetAllTodoLists, ]
+  operations: [CreateTodoList, DeleteTodoList, GetTodoList, GetAllTodoLists, UpdateTodoList]
 }
 
 structure TodoList {
@@ -80,4 +80,15 @@ structure GetAllTodoListsResponse {
 @http(method: "GET", uri: "/todos", code: 200)
 operation GetAllTodoLists {
   output: GetAllTodoListsResponse
+}
+
+@http(method: "PUT", uri: "/todos/{id}", code: 200)
+operation UpdateTodoList {
+  input := {
+    @required
+    @httpLabel
+    id: TodoListId
+    @required
+    todoList: TodoList
+  }
 }

@@ -1,20 +1,15 @@
-package godfinch.industries.repository
+package godfinch.industries.repository.model
 
-import cats.data.NonEmptyList
 import cats.effect.{MonadCancelThrow, Resource}
 import godfinch.industries.attention.spanner._
 import cats.implicits._
-import eu.timepit.refined.collection.NonEmpty
+
 import skunk._
 import skunk.implicits._
 import godfinch.industries.repository.model.Codecs._
 
-// Get all for a given todo list id.
-// insert many
-// update
-//
-trait TodoRepository[F[_]] {
-  def insertTodoList(todoList: NonEmptyList[Todo]): F[Unit]
+trait TodoListRepository[F[_]] {
+  def insertTodoList(todoList: TodoListDb): F[Unit]
 
   def deleteTodoList(todoListId: TodoListId): F[Unit]
 
@@ -25,8 +20,8 @@ trait TodoRepository[F[_]] {
   def updateTodoList(todoList: TodoListDb): F[Unit]
 }
 
-final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
-import TodoRepositoryImpl._
+final class TodoListRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoListRepository[F] {
+import TodoListRepositoryImpl._
   override def insertTodoList(todoList: TodoListDb): F[Unit] =
         postgres.use(
           _.prepare(insertTodoListCommand).flatMap (
@@ -60,7 +55,7 @@ import TodoRepositoryImpl._
     )
 }
 
-private object TodoRepositoryImpl {
+private object TodoListRepositoryImpl {
   val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoListDb]
 
   val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: timeCreated *: todoNames).values.to[TodoListDb]

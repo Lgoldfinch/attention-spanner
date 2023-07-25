@@ -10,9 +10,15 @@ string TodoName
 @uuidFormat
 string TodoListId
 timestamp TimeCreated
+boolean IsCompleted
+
+structure Todo {
+  todoName: TodoName
+  isCompleted: IsCompleted
+}
 
 list Todos {
-  member: TodoName
+  member: Todo
 }
 
 list AllTodoLists {
@@ -25,7 +31,7 @@ structure TodoListDb {
   @required
   todoName: TodoListName
   @required
-  createdTimestamp: TimeCreated
+  expiry_date: TimeCreated
   @required
   todos: Todos
 }

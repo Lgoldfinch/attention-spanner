@@ -23,15 +23,12 @@ trait TodoRepository[F[_]] {
 final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
 import TodoRepositoryImpl._
 
-  override def insertTodoList(todoList: TodoListDb): F[Unit] = {
-    todoList match {
-      case TodoListDb(id, todoListName, created, todos) =>
+  override def insertTodoList(todoList: TodoListDb): F[Unit] =
         postgres.use(_.prepare(insertTodoListCommand).flatMap (
-            _.execute(id *: todoListName *: created *: todos *: EmptyTuple).void
+            _.execute(todoList).void
           )
-    )
-    }
-  }
+      )
+
 
   override def deleteTodoList(todoListId: TodoListId): F[Unit] = postgres.use( session =>
       session.prepare(deleteTodoListCommand).flatMap {
@@ -59,14 +56,15 @@ import TodoRepositoryImpl._
 }
 
 private object TodoRepositoryImpl {
-  val insertTodoListCommand: Command[TodoListId *: TodoListName *: TimeCreated *: List[TodoName] *: EmptyTuple] = {
+  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoListDb]
+
+  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: timeCreated *: todoNames).values.to[TodoListDb]
+
+  val insertTodoListCommand: Command[TodoListDb] = {
     sql"""
         insert into todos (id, name, created_timestamp, tasks)
-        values ($todoListId, $todoListName, $timeCreated, $todoNames)
-       """.command.contramap {
-      case id *: todoName *: timeCreated *: todos *: EmptyTuple =>
-        id *: todoName *: timeCreated *: todos *: EmptyTuple
-    }
+        values $todoListEncoder
+       """.command
   }
 
   val deleteTodoListCommand: Command[TodoListId] =
@@ -77,15 +75,13 @@ private object TodoRepositoryImpl {
   val getAllTodoListsQuery: Query[Void, TodoListDb] =
     sql"""
          select id, name, created_timestamp, tasks from todos
-       """.query(todoListDecoder)
-
-  val todoListDecoder: Decoder[TodoListDb] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoListDb]
+       """.query(todoListDbCodec)
 
   val getTodoListQuery: Query[TodoListId, TodoListDb] =
     sql"""
       select id, name, created_timestamp, tasks from todos
       where id = $todoListId
-      """.query(todoListDecoder)
+      """.query(todoListDbCodec)
 
   val updateTodoListCommand: Command[TodoListDb] =
     sql"""
@@ -95,13 +91,4 @@ private object TodoRepositoryImpl {
            created_timestamp = $timeCreated,
            tasks = $todoNames
        """.command.to[TodoListDb]
-
-//      .contramap(
-//         update =>
-//            update.todoListId *:
-//            update.todoListName *:
-//            update.timeCreated *:
-//            update.todos *:
-//
-//    )
 }

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS todo_list (
     tasks TEXT[] NOT NULL
 );
 
-create index if not exists index_todos_id on todo_list(id);
+CREATE INDEX IF NOT EXISTS index_todos_id ON todo_list(id);
 
 CREATE TABLE IF NOT EXISTS todo (
     id UUID PRIMARY KEY,
@@ -13,10 +13,10 @@ CREATE TABLE IF NOT EXISTS todo (
     name TEXT NOT NULL,
     is_completed BOOLEAN NOT NULL
 
-constraint fk_todo_list_id
-    foreign key (todo_list_id)
-    references todo_list(id)
-    on update no action on delete cascade
+CONSTRAINT fk_todo_list_id
+    FOREIGN KEY (todo_list_id)
+    REFERENCES todo_list(id)
+    ON UPDATE NO ACTION ON DELETE DELETE
 );
 
-create index if not exists index_todo_id on todo(id);
+CREATE INDEX IF NOT EXISTS index_todo_id ON todo(id);

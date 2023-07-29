@@ -1,15 +1,14 @@
 package godfinch.industries
 
+import cats.Monad
 import cats.effect.kernel.Clock
-import cats.{Functor, Monad}
 import cats.effect.std.Console
+import cats.implicits._
 import godfinch.industries.attention.spanner._
 import godfinch.industries.repository.TodoRepository
 import smithy4s.Timestamp
 
-import java.time.Instant
 import java.util.UUID
-import cats.implicits._
 
 final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: TodoRepository[F]) extends TodoListService[F] {
 

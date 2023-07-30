@@ -26,13 +26,17 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
       } yield ()
     }
 
-  override def deleteTodoList(todoListId: TodoListId): F[Unit] = {
-    todoRepository.deleteTodoList(todoListId)
+  override def deleteTodoList(todoListId: TodoListId): F[Unit] = todoListRepository.deleteTodoList(todoListId)
+
+  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoListRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
+
+  override def getTodoList(id: TodoListId): F[GetTodoListResponse] = {
+    for {
+      todoList <- todoListRepository.getTodoList(id)
+      todos    <- todoRepository.getTodos(id)
+      finalTodoList = todoList.map(todoList => TodoList(todoList.todoName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
+    } yield GetTodoListResponse(finalTodoList)
   }
-
-  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
-
-  override def getTodoList(id: TodoListId): F[GetTodoListResponse] = todoRepository.getTodoList(id).map(GetTodoListResponse(_))
 
   override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] = {
     for {

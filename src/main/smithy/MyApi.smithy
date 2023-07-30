@@ -80,7 +80,7 @@ operation DeleteTodoList {
 }
 
 structure GetTodoListResponse {
-  todoList: TodoListDb
+  todoList: TodoList
 }
 
 @http(method: "GET", uri: "/todo/{id}", code: 200)

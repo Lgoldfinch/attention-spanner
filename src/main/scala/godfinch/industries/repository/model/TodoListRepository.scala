@@ -56,39 +56,39 @@ import TodoListRepositoryImpl._
 }
 
 private object TodoListRepositoryImpl {
-  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: expiryDate *: todoNames).to[TodoListDb]
+  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: expiryDate).to[TodoListDb]
 
-  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: expiryDate *: todoNames).values.to[TodoListDb]
+  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: expiryDate).values.to[TodoListDb]
 
   val insertTodoListCommand: Command[TodoListDb] = {
     sql"""
-        INSERT INTO todos (id, name, created_timestamp, tasks)
+        INSERT INTO todo_list (id, name, expiry_date, tasks)
         VALUES $todoListEncoder
        """.command
   }
 
   val deleteTodoListCommand: Command[TodoListId] =
     sql"""
-        DELETE FROM todos WHERE id = $todoListId
+        DELETE FROM todo_list WHERE id = $todoListId
        """.command
 
   val getAllTodoListsQuery: Query[Void, TodoListDb] =
     sql"""
-         SELECT id, name, created_timestamp, tasks FROM todos
+         SELECT id, name, expiry_date, tasks FROM todo_list
        """.query(todoListDbCodec)
 
   val getTodoListQuery: Query[TodoListId, TodoListDb] =
     sql"""
-      SELECT id, name, created_timestamp, tasks FROM todos
+      SELECT id, name, expiry_date, tasks FROM todo_list
       WHERE id = $todoListId
       """.query(todoListDbCodec)
 
   val updateTodoListCommand: Command[TodoListDb] =
     sql"""
-         UPDATE todos SET
+         UPDATE todo_list SET
            id = $todoListId,
            name = $todoListName,
-           created_timestamp = $expiryDate,
+           expiry_date = $expiryDate,
            tasks = $todoNames
        """.command.to[TodoListDb]
 }

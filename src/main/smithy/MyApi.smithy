@@ -26,7 +26,7 @@ structure TodoDb {
   @required
   id: TodoId
   @required
-  todo_list_id: TodoListId
+  todoListId: TodoListId
   @required
   name: TodoName
   @required
@@ -41,6 +41,15 @@ list AllTodoLists {
   member: TodoListDb
 }
 
+structure TodoList {
+  @required
+  todoListName: TodoListName
+  @required
+  expiryDate: ExpiryDate
+  @required
+  todos: Todos
+}
+
 structure TodoListDb {
   @required
   id: TodoListId
@@ -48,21 +57,12 @@ structure TodoListDb {
   todoName: TodoListName
   @required
   expiryDate: ExpiryDate
-  @required
-  todos: Todos
 }
 
 @simpleRestJson
 service TodoListService {
   version: "1.0.0",
   operations: [CreateTodoList, DeleteTodoList, GetTodoList, GetAllTodoLists, UpdateTodoList]
-}
-
-structure TodoList {
-  @required
-  todoListName: TodoListName
-  @required
-  todos: Todos
 }
 
 @http(method: "POST", uri: "/todos", code: 200)

@@ -1,8 +1,7 @@
 CREATE TABLE IF NOT EXISTS todo_list (
     id UUID PRIMARY KEY,
     name TEXT NOT NULL,
-    expiry_date TIMESTAMP NOT NULL,
-    tasks TEXT[] NOT NULL
+    expiry_date TIMESTAMP NOT NULL
 );
 
 CREATE INDEX IF NOT EXISTS index_todos_id ON todo_list(id);

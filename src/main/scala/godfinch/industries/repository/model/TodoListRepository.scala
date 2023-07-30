@@ -56,9 +56,9 @@ import TodoListRepositoryImpl._
 }
 
 private object TodoListRepositoryImpl {
-  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoListDb]
+  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: expiryDate *: todoNames).to[TodoListDb]
 
-  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: timeCreated *: todoNames).values.to[TodoListDb]
+  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: expiryDate *: todoNames).values.to[TodoListDb]
 
   val insertTodoListCommand: Command[TodoListDb] = {
     sql"""
@@ -88,7 +88,7 @@ private object TodoListRepositoryImpl {
          UPDATE todos SET
            id = $todoListId,
            name = $todoListName,
-           created_timestamp = $timeCreated,
+           created_timestamp = $expiryDate,
            tasks = $todoNames
        """.command.to[TodoListDb]
 }

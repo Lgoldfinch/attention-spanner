@@ -10,11 +10,10 @@ string TodoId
 string TodoName
 boolean IsCompleted
 
-
 @uuidFormat
-string TodoListName
 string TodoListId
-timestamp TimeCreated
+string TodoListName
+timestamp ExpiryDate
 
 structure Todo {
   @required
@@ -48,7 +47,7 @@ structure TodoListDb {
   @required
   todoName: TodoListName
   @required
-  expiry_date: TimeCreated
+  expiryDate: ExpiryDate
   @required
   todos: Todos
 }

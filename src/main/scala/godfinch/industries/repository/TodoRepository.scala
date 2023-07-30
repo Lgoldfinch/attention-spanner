@@ -1,18 +1,15 @@
 package godfinch.industries.repository
 
 import cats.data.NonEmptyList
+import cats.effect.kernel.Concurrent
 import cats.effect.{MonadCancelThrow, Resource}
 import godfinch.industries.attention.spanner._
+import godfinch.industries.attention.spanner._
 import cats.implicits._
-import eu.timepit.refined.collection.NonEmpty
 import skunk._
 import skunk.implicits._
 import godfinch.industries.repository.model.Codecs._
 
-// Get all for a given todo list id.
-// insert many
-// update
-//
 trait TodoRepository[F[_]] {
   def insertTodoLists(todoList: NonEmptyList[TodoDb]): F[Unit]
 
@@ -21,12 +18,12 @@ trait TodoRepository[F[_]] {
   def getTodos(todoListId: TodoListId): F[List[TodoDb]]
 }
 
-final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
+final class TodoRepositoryImpl[F[_]: Concurrent](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
 import TodoRepositoryImpl._
-  override def insertTodoLists(todoList: NonEmptyList[TodoDb]): F[Unit]
+  override def insertTodoLists(todoLists: NonEmptyList[TodoDb]): F[Unit] =
   postgres.use(
           _.prepare(insertTodoListCommand).flatMap (
-            _.execute(todoList).void
+            _.execute(todoLists).void
           )
       )
 
@@ -37,19 +34,19 @@ import TodoRepositoryImpl._
       }
   )
 
-  override def getTodos(todoListId: TodoListId): F[Option[Todo]] =
-    postgres.use(_.prepare(getTodoListQuery).flatMap(
-      _.option(todoListId)
+  override def getTodos(todoListId: TodoListId): F[List[TodoDb]] =
+    postgres.use(_.prepare(getTodosQuery).flatMap(
+      _.stream(todoListId, 1024).compile.toList
     )
   )
 }
 
 private object TodoRepositoryImpl {
-  val todoDbCodec: Codec[TodoDb] =  (todoId *:  todoListId *: todoName *: IsCompleted).to[TodoDb]
+  val todoDbCodec: Codec[TodoDb] =  (todoId *: todoListId *: todoName *: isTodoCompleted).to[TodoDb]
 
-  val todoListEncoder: Encoder[TodoDb] = (todoId *:  todoListId *: todoName *: IsCompleted).values.to[TodoDb]
+  val todoListEncoder: Encoder[TodoDb] = (todoId *:  todoListId *: todoName *: isTodoCompleted).values.to[TodoDb]
 
-  val insertTodoListCommand: Command[Todo] = {
+  val insertTodoListCommand: Command[TodoDb] = {
     sql"""
         INSERT INTO todo (id, todo_list_id, name, is_completed)
         VALUES $todoListEncoder
@@ -66,6 +63,6 @@ private object TodoRepositoryImpl {
     sql"""
       SELECT id, todo_list_id, name, is_completed FROM todo
       WHERE id = $todoListId
-      """.query(todoListDbCodec)
+      """.query(todoDbCodec)
 
 }

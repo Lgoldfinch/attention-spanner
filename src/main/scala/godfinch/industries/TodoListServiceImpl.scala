@@ -16,7 +16,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
     val id = TodoListId(UUID.randomUUID())
     for {
       now <- Clock[F].realTimeInstant
-      _   <- todoRepository.insertTodoList(TodoListDb(id, todoListName, TimeCreated(Timestamp.fromInstant(now)), todos))
+      _   <- todoRepository.insertTodoList(TodoListDb(id, todoListName, ExpiryDate(Timestamp.fromInstant(now)), todos))
       _   <- Console[F].println(id)
     } yield ()
   }
@@ -36,7 +36,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
         TodoListDb(
           id,
           todoList.todoListName,
-          TimeCreated(Timestamp.fromInstant(now)),
+          ExpiryDate(Timestamp.fromInstant(now)),
           todoList.todos)
       )
     } yield ()

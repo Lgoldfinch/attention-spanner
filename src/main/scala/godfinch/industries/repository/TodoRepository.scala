@@ -14,86 +14,58 @@ import godfinch.industries.repository.model.Codecs._
 // update
 //
 trait TodoRepository[F[_]] {
-  def insertTodoList(todoList: NonEmptyList[Todo]): F[Unit]
+  def insertTodoLists(todoList: NonEmptyList[TodoDb]): F[Unit]
 
-  def deleteTodoList(todoListId: TodoListId): F[Unit]
+  def deleteTodos(todoListId: TodoListId): F[Unit]
 
-  def getAllTodoLists: F[List[TodoListDb]]
-
-  def getTodoList(todoListId: TodoListId): F[Option[TodoListDb]]
-
-  def updateTodoList(todoList: TodoListDb): F[Unit]
+  def getTodos(todoListId: TodoListId): F[List[TodoDb]]
 }
 
 final class TodoRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
 import TodoRepositoryImpl._
-  override def insertTodoList(todoList: TodoListDb): F[Unit] =
-        postgres.use(
+  override def insertTodoLists(todoList: NonEmptyList[TodoDb]): F[Unit]
+  postgres.use(
           _.prepare(insertTodoListCommand).flatMap (
             _.execute(todoList).void
           )
       )
 
 
-  override def deleteTodoList(todoListId: TodoListId): F[Unit] = postgres.use(
-    _.prepare(deleteTodoListCommand).flatMap {
+  override def deleteTodos(todoListId: TodoListId): F[Unit] = postgres.use(
+    _.prepare(deleteTodosCommand).flatMap {
         _.execute(todoListId).void
       }
   )
 
-  override def getAllTodoLists: F[List[TodoListDb]] = {
-    postgres.use(
-      _.execute(getAllTodoListsQuery)
-    )
-  }
-
-  override def getTodoList(todoListId: TodoListId): F[Option[TodoListDb]] =
+  override def getTodos(todoListId: TodoListId): F[Option[Todo]] =
     postgres.use(_.prepare(getTodoListQuery).flatMap(
       _.option(todoListId)
     )
   )
-
-  override def updateTodoList(todoList: TodoListDb): F[Unit] =
-    postgres.use(_.prepare(updateTodoListCommand).flatMap(
-      _.execute(todoList).void
-      )
-    )
 }
 
 private object TodoRepositoryImpl {
-  val todoListDbCodec: Codec[TodoListDb] =  (todoListId *: todoListName *: timeCreated *: todoNames).to[TodoListDb]
+  val todoDbCodec: Codec[TodoDb] =  (todoId *:  todoListId *: todoName *: IsCompleted).to[TodoDb]
 
-  val todoListEncoder: Encoder[TodoListDb] = (todoListId *: todoListName *: timeCreated *: todoNames).values.to[TodoListDb]
+  val todoListEncoder: Encoder[TodoDb] = (todoId *:  todoListId *: todoName *: IsCompleted).values.to[TodoDb]
 
-  val insertTodoListCommand: Command[TodoListDb] = {
+  val insertTodoListCommand: Command[Todo] = {
     sql"""
-        INSERT INTO todos (id, name, created_timestamp, tasks)
+        INSERT INTO todo (id, todo_list_id, name, is_completed)
         VALUES $todoListEncoder
        """.command
   }
 
-  val deleteTodoListCommand: Command[TodoListId] =
+  val deleteTodosCommand: Command[TodoListId] =
     sql"""
-        DELETE FROM todos WHERE id = $todoListId
-       """.command
+         DELETE FROM todo WHERE id = $todoListId
+        """.command
 
-  val getAllTodoListsQuery: Query[Void, TodoListDb] =
-    sql"""
-         SELECT id, name, created_timestamp, tasks FROM todos
-       """.query(todoListDbCodec)
 
-  val getTodoListQuery: Query[TodoListId, TodoListDb] =
+  val getTodosQuery: Query[TodoListId, TodoDb] =
     sql"""
-      SELECT id, name, created_timestamp, tasks FROM todos
+      SELECT id, todo_list_id, name, is_completed FROM todo
       WHERE id = $todoListId
       """.query(todoListDbCodec)
 
-  val updateTodoListCommand: Command[TodoListDb] =
-    sql"""
-         UPDATE todos SET
-           id = $todoListId,
-           name = $todoListName,
-           created_timestamp = $timeCreated,
-           tasks = $todoNames
-       """.command.to[TodoListDb]
 }

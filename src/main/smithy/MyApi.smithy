@@ -5,15 +5,32 @@ namespace godfinch.industries.attention.spanner
 use alloy#simpleRestJson
 use alloy#uuidFormat
 
-string TodoListName
-string TodoName
 @uuidFormat
-string TodoListId
-timestamp TimeCreated
+string TodoId
+string TodoName
 boolean IsCompleted
 
+
+@uuidFormat
+string TodoListName
+string TodoListId
+timestamp TimeCreated
+
 structure Todo {
-  todoName: TodoName
+  @required
+  name: TodoName
+  @required
+  isCompleted: IsCompleted
+}
+
+structure TodoDb {
+  @required
+  id: TodoId
+  @required
+  todo_list_id: TodoListId
+  @required
+  name: TodoName
+  @required
   isCompleted: IsCompleted
 }
 

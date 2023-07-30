@@ -38,16 +38,20 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
     } yield GetTodoListResponse(finalTodoList)
   }
 
-  override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] = {
+  override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] =
     for {
-      now <- Clock[F].realTimeInstant
-      _   <- todoRepository.updateTodoList(
+      _  <- todoListRepository.updateTodoList(
         TodoListDb(
           id,
           todoList.todoListName,
-          ExpiryDate(Timestamp.fromInstant(now)),
-          todoList.todos)
+          todoList.expiryDate
+        )
       )
+      _ <- todoRepository.deleteTodos(id)
+      todosWithIds = todoList.todos.map { todo =>
+        val todoId = UUID.randomUUID()
+        TodoDb(todoId, id, todo.name, todo.isCompleted)
+      }.toNel
+      _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodoLists)
     } yield ()
-  }
 }

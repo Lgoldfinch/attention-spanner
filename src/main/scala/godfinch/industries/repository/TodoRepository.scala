@@ -11,7 +11,7 @@ import skunk.implicits._
 import godfinch.industries.repository.model.Codecs._
 
 trait TodoRepository[F[_]] {
-  def insertTodoLists(todoList: NonEmptyList[TodoDb]): F[Unit]
+  def insertTodos(todoList: NonEmptyList[TodoDb]): F[Unit]
 
   def deleteTodos(todoListId: TodoListId): F[Unit]
 
@@ -20,12 +20,14 @@ trait TodoRepository[F[_]] {
 
 final class TodoRepositoryImpl[F[_]: Concurrent](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
 import TodoRepositoryImpl._
-  override def insertTodoLists(todoLists: NonEmptyList[TodoDb]): F[Unit] =
+  override def insertTodos(todoLists: NonEmptyList[TodoDb]): F[Unit] =
   postgres.use(
-          _.prepare(insertTodoListCommand).flatMap (
-            _.execute(todoLists).void
-          )
+          _.prepare(insertTodoListCommand).flatMap ( a =>
+            todoLists.traverse( todo =>
+            a.execute(todo)
+          ).void
       )
+  )
 
 
   override def deleteTodos(todoListId: TodoListId): F[Unit] = postgres.use(

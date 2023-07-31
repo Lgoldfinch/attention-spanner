@@ -74,12 +74,12 @@ private object TodoListRepositoryImpl {
 
   val getAllTodoListsQuery: Query[Void, TodoListDb] =
     sql"""
-         SELECT id, name, expiry_date, tasks FROM todo_list
+         SELECT id, name, expiry_date FROM todo_list
        """.query(todoListDbCodec)
 
   val getTodoListQuery: Query[TodoListId, TodoListDb] =
     sql"""
-      SELECT id, name, expiry_date, tasks FROM todo_list
+      SELECT id, name, expiry_date FROM todo_list
       WHERE id = $todoListId
       """.query(todoListDbCodec)
 
@@ -88,7 +88,6 @@ private object TodoListRepositoryImpl {
          UPDATE todo_list SET
            id = $todoListId,
            name = $todoListName,
-           expiry_date = $expiryDate,
-           tasks = $todoNames
+           expiry_date = $expiryDate
        """.command.to[TodoListDb]
 }

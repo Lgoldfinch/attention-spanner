@@ -21,7 +21,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
           val todoId = UUID.randomUUID()
           TodoDb(todoId, todoListId, todo.name, todo.isCompleted)
         }.toNel
-        _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodoLists)
+        _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodos)
         _ <- Console[F].print(todoListId)
       } yield ()
     }
@@ -52,6 +52,6 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
         val todoId = UUID.randomUUID()
         TodoDb(todoId, id, todo.name, todo.isCompleted)
       }.toNel
-      _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodoLists)
+      _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodos)
     } yield ()
 }

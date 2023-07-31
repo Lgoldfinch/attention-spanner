@@ -6,6 +6,7 @@ import smithy4s.http4s.SimpleRestJsonBuilder
 import cats.implicits._
 import godfinch.industries.attention.spanner.TodoListService
 import godfinch.industries.repository.TodoRepositoryImpl
+import godfinch.industries.repository.model.TodoListRepositoryImpl
 import skunk.Session
 
 object Routes {
@@ -13,14 +14,15 @@ object Routes {
 
   def all(postgres: Resource[IO, Session[IO]]): Resource[IO, HttpRoutes[IO]] = {
     val todoRepository = new TodoRepositoryImpl[IO](postgres)
-    val todoListService: TodoListServiceImpl[IO] = new TodoListServiceImpl[IO](todoRepository)
+    val todoListRepository = new TodoListRepositoryImpl[IO](postgres)
+    val todoListService: TodoListServiceImpl[IO] = new TodoListServiceImpl[IO](todoRepository, todoListRepository)
 
-    val example: Resource[IO, HttpRoutes[IO]] =
+    val todoRoutes: Resource[IO, HttpRoutes[IO]] =
       SimpleRestJsonBuilder.routes(todoListService).resource
 
      val docs: HttpRoutes[IO] =
       smithy4s.http4s.swagger.docs[IO](TodoListService)
 
-    example.map(_ <+> docs)
+    todoRoutes.map(_ <+> docs)
   }
 }

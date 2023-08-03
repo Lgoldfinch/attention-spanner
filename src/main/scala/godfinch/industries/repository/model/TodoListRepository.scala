@@ -62,7 +62,7 @@ private object TodoListRepositoryImpl {
 
   val insertTodoListCommand: Command[TodoListDb] = {
     sql"""
-        INSERT INTO todo_list (id, name, expiry_date, tasks)
+        INSERT INTO todo_list (id, name, expiry_date)
         VALUES $todoListEncoder
        """.command
   }

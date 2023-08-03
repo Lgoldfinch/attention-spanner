@@ -54,7 +54,7 @@ structure TodoListDb {
   @required
   id: TodoListId
   @required
-  todoName: TodoListName
+  todoListName: TodoListName
   @required
   expiryDate: ExpiryDate
 }
@@ -83,7 +83,7 @@ structure GetTodoListResponse {
   todoList: TodoList
 }
 
-@http(method: "GET", uri: "/todo/{id}", code: 200)
+@http(method: "GET", uri: "/todos/{id}", code: 200)
 operation GetTodoList {
   input := {
     @required

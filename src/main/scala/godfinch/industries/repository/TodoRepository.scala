@@ -2,8 +2,7 @@ package godfinch.industries.repository
 
 import cats.data.NonEmptyList
 import cats.effect.kernel.Concurrent
-import cats.effect.{MonadCancelThrow, Resource}
-import godfinch.industries.attention.spanner._
+import cats.effect.Resource
 import godfinch.industries.attention.spanner._
 import cats.implicits._
 import skunk._
@@ -64,7 +63,7 @@ private object TodoRepositoryImpl {
   val getTodosQuery: Query[TodoListId, TodoDb] =
     sql"""
       SELECT id, todo_list_id, name, is_completed FROM todo
-      WHERE id = $todoListId
+      WHERE todo_list_id = $todoListId
       """.query(todoDbCodec)
 
 }

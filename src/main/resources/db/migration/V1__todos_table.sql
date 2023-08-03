@@ -8,14 +8,14 @@ CREATE INDEX IF NOT EXISTS index_todos_id ON todo_list(id);
 
 CREATE TABLE IF NOT EXISTS todo (
     id UUID PRIMARY KEY,
-    todo_list_id UUID
+    todo_list_id UUID,
     name TEXT NOT NULL,
-    is_completed BOOLEAN NOT NULL
+    is_completed BOOLEAN NOT NULL,
 
 CONSTRAINT fk_todo_list_id
     FOREIGN KEY (todo_list_id)
     REFERENCES todo_list(id)
-    ON UPDATE NO ACTION ON DELETE DELETE
+    ON UPDATE NO ACTION ON DELETE CASCADE
 );
 
 CREATE INDEX IF NOT EXISTS index_todo_id ON todo(id);

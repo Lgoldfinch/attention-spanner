@@ -16,7 +16,6 @@ object Codecs {
   val todoListName: Codec[TodoListName] = text.imap[TodoListName](TodoListName(_))(_.value)
   val todoListId: Codec[TodoListId] = uuid.imap[TodoListId](TodoListId(_))(_.value)
   val _todoName: Codec[Arr[TodoName]] = Codec.array(_.value, str => Right(str), Type._text)
-  val todoNames: Codec[List[TodoName]] = _todoName.toList
 
   val todoId: Codec[TodoId] = uuid.imap[TodoId](TodoId(_))(_.value)
   val todoName: Codec[TodoName] = text.imap[TodoName](TodoName(_))(_.value)

@@ -13,7 +13,7 @@ import java.util.UUID
 
 final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
 
-  override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = {
+  override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = { // The expiry time might need to be a bit more readable. i.e 2021-01-01
       val todoListId = TodoListId(UUID.randomUUID())
       for {
         _ <- todoListRepository.insertTodoList(TodoListDb(todoListId, todoListName, expiryDate))
@@ -21,6 +21,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
           val todoId = UUID.randomUUID()
           TodoDb(todoId, todoListId, todo.name, todo.isCompleted)
         }.toNel
+        _ = println(todosWithIds)
         _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodos)
         _ <- Console[F].print(todoListId)
       } yield ()
@@ -34,7 +35,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
     for {
       todoList <- todoListRepository.getTodoList(id)
       todos    <- todoRepository.getTodos(id)
-      finalTodoList = todoList.map(todoList => TodoList(todoList.todoName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
+      finalTodoList = todoList.map(todoList => TodoList(todoList.todoListName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
     } yield GetTodoListResponse(finalTodoList)
   }
 

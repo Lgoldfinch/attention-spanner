@@ -11,9 +11,9 @@ import smithy4s.Timestamp
 
 import java.util.UUID
 
-final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
+final class TodoListServiceImpl[F[_]: Monad](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
 
-  override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = { // The expiry time might need to be a bit more readable. i.e 2021-01-01
+  override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = {
       val todoListId = TodoListId(UUID.randomUUID())
       for {
         _ <- todoListRepository.insertTodoList(TodoListDb(todoListId, todoListName, expiryDate))
@@ -21,9 +21,7 @@ final class TodoListServiceImpl[F[_]: Monad: Console: Clock](todoRepository: Tod
           val todoId = UUID.randomUUID()
           TodoDb(todoId, todoListId, todo.name, todo.isCompleted)
         }.toNel
-        _ = println(todosWithIds)
         _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodos)
-        _ <- Console[F].print(todoListId)
       } yield ()
     }
 

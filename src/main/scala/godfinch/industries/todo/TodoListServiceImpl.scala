@@ -1,13 +1,10 @@
-package godfinch.industries
+package godfinch.industries.todo
 
-import cats.{Applicative, Monad}
-import cats.effect.kernel.Clock
-import cats.effect.std.Console
 import cats.implicits._
+import cats.{Applicative, Monad}
 import godfinch.industries.attention.spanner._
-import godfinch.industries.repository.TodoRepository
-import godfinch.industries.repository.model.TodoListRepository
-import smithy4s.Timestamp
+import godfinch.industries.todo.list.TodoListRepository
+import godfinch.industries.todo.todos.TodoRepository
 
 import java.util.UUID
 

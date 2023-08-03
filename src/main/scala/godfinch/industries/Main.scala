@@ -13,7 +13,6 @@ import skunk.implicits._
 import skunk.codec.all._
 import cats.effect._
 import cats.effect.unsafe.implicits.global
-import godfinch.industries.repository.SqlMigrator
 import skunk._
 import skunk.implicits._
 import skunk.codec.all._

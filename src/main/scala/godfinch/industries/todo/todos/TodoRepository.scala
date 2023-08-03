@@ -1,13 +1,15 @@
-package godfinch.industries.repository
+package godfinch.industries.todo.todos
 
 import cats.data.NonEmptyList
-import cats.effect.kernel.Concurrent
 import cats.effect.Resource
-import godfinch.industries.attention.spanner._
+import cats.effect.kernel.Concurrent
 import cats.implicits._
+import godfinch.industries.attention.spanner._
+import godfinch.industries.todo.CodecUtils._
 import skunk._
 import skunk.implicits._
-import godfinch.industries.repository.model.Codecs._
+import TodoCodecs._
+import godfinch.industries.todo.list.TodoListCodecs.todoListId
 
 trait TodoRepository[F[_]] {
   def insertTodos(todoList: NonEmptyList[TodoDb]): F[Unit]

@@ -1,12 +1,11 @@
-package godfinch.industries.repository.model
+package godfinch.industries.todo.list
 
 import cats.effect.{MonadCancelThrow, Resource}
-import godfinch.industries.attention.spanner._
 import cats.implicits._
-
+import godfinch.industries.attention.spanner._
+import godfinch.industries.todo.list.TodoListCodecs._
 import skunk._
 import skunk.implicits._
-import godfinch.industries.repository.model.Codecs._
 
 trait TodoListRepository[F[_]] {
   def insertTodoList(todoList: TodoListDb): F[Unit]

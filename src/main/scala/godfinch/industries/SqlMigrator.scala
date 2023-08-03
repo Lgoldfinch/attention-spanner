@@ -1,9 +1,9 @@
-package godfinch.industries.repository
+package godfinch.industries
 
 import cats.effect.Sync
+import cats.implicits._
 import org.flywaydb.core.Flyway
 import org.typelevel.log4cats.Logger
-import cats.implicits._
 
 final class SqlMigrator[F[_]](implicit logger: Logger[F], S: Sync[F]) {
   def run: F[Unit] = {

@@ -5,8 +5,9 @@ import org.http4s.HttpRoutes
 import smithy4s.http4s.SimpleRestJsonBuilder
 import cats.implicits._
 import godfinch.industries.attention.spanner.TodoListService
-import godfinch.industries.repository.TodoRepositoryImpl
-import godfinch.industries.repository.model.TodoListRepositoryImpl
+import godfinch.industries.todo.TodoListServiceImpl
+import godfinch.industries.todo.list.TodoListRepositoryImpl
+import godfinch.industries.todo.todos.TodoRepositoryImpl
 import skunk.Session
 
 object Routes {

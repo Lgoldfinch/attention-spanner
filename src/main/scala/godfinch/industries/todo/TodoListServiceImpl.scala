@@ -5,6 +5,7 @@ import cats.{Applicative, Monad}
 import godfinch.industries.attention.spanner._
 import godfinch.industries.todo.list.TodoListRepository
 import godfinch.industries.todo.todos.TodoRepository
+import smithy4s.Timestamp
 
 import java.util.UUID
 
@@ -26,13 +27,23 @@ final class TodoListServiceImpl[F[_]: Monad](todoRepository: TodoRepository[F], 
 
   override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoListRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
 
-  override def getTodoList(id: TodoListId): F[GetTodoListResponse] = {
+  private def todoListExpirationCheck(todoList: TodoListDb) =
+      if (Timestamp.nowUTC().isAfter(todoList.expiryDate.value))
+        todoRepository.setCompletionStatus(
+          IsCompleted(false),
+          todoList.id
+        )
+      else
+        Applicative[F].unit
+
+  override def getTodoList(id: TodoListId): F[GetTodoListResponse] =
     for {
-      todoList <- todoListRepository.getTodoList(id)
+      todoListDb <- todoListRepository.getTodoList(id)
+      _ <- todoListDb.traverse(todoListExpirationCheck)
       todos    <- todoRepository.getTodos(id)
-      finalTodoList = todoList.map(todoList => TodoList(todoList.todoListName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
+      finalTodoList = todoListDb.map(todoList => TodoList(todoList.todoListName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
     } yield GetTodoListResponse(finalTodoList)
-  }
+
 
   override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] =
     for {

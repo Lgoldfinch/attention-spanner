@@ -5,10 +5,9 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.implicits._
 import godfinch.industries.attention.spanner._
-import godfinch.industries.todo.CodecUtils._
 import skunk._
 import skunk.implicits._
-import TodoCodecs._
+import TodoCodecs.{isTodoCompleted, _}
 import godfinch.industries.todo.list.TodoListCodecs.todoListId
 
 trait TodoRepository[F[_]] {
@@ -17,6 +16,8 @@ trait TodoRepository[F[_]] {
   def deleteTodos(todoListId: TodoListId): F[Unit]
 
   def getTodos(todoListId: TodoListId): F[List[TodoDb]]
+
+  def setCompletionStatus(isCompleted: IsCompleted, todoListId: TodoListId): F[Unit]
 }
 
 final class TodoRepositoryImpl[F[_]: Concurrent](postgres: Resource[F, Session[F]]) extends TodoRepository[F] {
@@ -41,6 +42,12 @@ import TodoRepositoryImpl._
     postgres.use(_.prepare(getTodosQuery).flatMap(
       _.stream(todoListId, 1024).compile.toList
     )
+  )
+
+  def setCompletionStatus(isCompleted: IsCompleted, todoListId: TodoListId): F[Unit] = postgres.use(
+    _.prepare(setCompletionStatusQuery).flatMap(_.execute(
+      isCompleted *: todoListId *: EmptyTuple)
+    ).void
   )
 }
 
@@ -68,4 +75,10 @@ private object TodoRepositoryImpl {
       WHERE todo_list_id = $todoListId
       """.query(todoDbCodec)
 
+  val setCompletionStatusQuery: Command[IsCompleted *: TodoListId *: EmptyTuple] =
+    sql"""
+        UPDATE todo SET
+          is_completed = $isTodoCompleted
+          where todo_list_id = $todoListId
+       """.command
 }

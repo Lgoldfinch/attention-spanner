@@ -65,7 +65,7 @@ private object TodoRepositoryImpl {
 
   val deleteTodosCommand: Command[TodoListId] =
     sql"""
-         DELETE FROM todo WHERE id = $todoListId
+         DELETE FROM todo WHERE todo_list_id = $todoListId
         """.command
 
 

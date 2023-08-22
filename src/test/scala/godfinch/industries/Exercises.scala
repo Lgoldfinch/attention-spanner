@@ -1,10 +1,13 @@
 package godfinch.industries
 
+import cats.data.NonEmptyVector
 import munit.FunSuite
 
+import java.util.UUID
 import scala.annotation.tailrec
+import scala.collection.immutable.Seq
 
-class Exercises extends FunSuite {
+object Exercises extends FunSuite {
   sealed trait MyList[+A]
   case object Nil extends MyList[Nothing]
   case class Cons[+A](head: A, tail: MyList[A]) extends MyList[A]
@@ -127,5 +130,46 @@ println(append(Cons(5, Cons(234, Nil)), Cons(1, Nil)))
   }
 
   println(filter(Cons(1, Cons(2, Cons(3, Nil))))(a => a % 2 != 1))
-}
 
+  sealed trait Tree[+A]
+
+  case class Leaf[A](value: A) extends Tree[A]
+
+  case class Branch[A](left: Tree[A], right: Tree[A]) extends Tree[A]
+
+  def size[A](t: Tree[A]): Int = t match {
+    case Leaf(_) => 1
+    case Branch(l, r) => 1 + size(l) + size(r)
+  }
+
+  println(size(Branch(Leaf(1), Branch(Branch(Leaf(123), Leaf(1234)), Leaf(2345)))))
+
+  def max(t: Tree[Int]): Int = t match {
+    case Leaf(value) => value
+    case Branch(left, right) => max(left) max max(right)
+  }
+
+  println(max(Branch(Leaf(1), Branch(Branch(Leaf(123), Leaf(1234)), Leaf(2345)))))
+
+  def depth[A](t: Tree[A]): Int = t match {
+    case Leaf(_) => 1
+    case Branch(left, right) => 1 + depth(left) max depth(right)
+  }
+
+  println(depth(Branch(Leaf(1), Branch(Leaf(2), Leaf(2)))))
+
+  def map[A, B](t: Tree[A])(f: A => B): Tree[B] = t match {
+    case Leaf(value) => Leaf(f(value))
+    case Branch(left, right) => Branch(map(left)(f), map(right)(f))
+  }
+
+  def fold[A, B](t: Tree[A])(f: A => B)(g: (B, B) => B): B =
+    t match {
+      case Leaf(value)         => f(value)
+      case Branch(left, right) => g(fold(left)(f)(g), fold(right)(f)(g))
+    }
+
+//  def mapAsFold[A,B](t: Tree[A])(f: A => B): Tree[B] = fold(t)(f)()
+//
+//  def depthAsFold[A](t: Tree[A]): Int = fold(t)(_ => 1)((left, right) => 1 + depthAsFold(left) max depthAsFold(right))
+}

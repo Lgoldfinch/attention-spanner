@@ -27,15 +27,6 @@ final class TodoListServiceImpl[F[_]: Monad](todoRepository: TodoRepository[F], 
 
   override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoListRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
 
-  private def todoListExpirationCheck(todoList: TodoListDb) =
-      if (Timestamp.nowUTC().isAfter(todoList.expiryDate.value))
-        todoRepository.setCompletionStatus(
-          IsCompleted(false),
-          todoList.id
-        )
-      else
-        Applicative[F].unit
-
   override def getTodoList(id: TodoListId): F[GetTodoListResponse] =
     for {
       todoListDb <- todoListRepository.getTodoList(id)
@@ -44,6 +35,14 @@ final class TodoListServiceImpl[F[_]: Monad](todoRepository: TodoRepository[F], 
       finalTodoList = todoListDb.map(todoList => TodoList(todoList.todoListName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
     } yield GetTodoListResponse(finalTodoList)
 
+  private def todoListExpirationCheck(todoList: TodoListDb): F[Unit] =
+    if (Timestamp.nowUTC().isAfter(todoList.expiryDate.value))
+      todoRepository.setCompletionStatus(
+        IsCompleted(false),
+        todoList.id
+      )
+    else
+      Applicative[F].unit
 
   override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] =
     for {

@@ -12,7 +12,7 @@ COPY . ./
 RUN rm -rf ~/.sbt/boot/ ~/.sbt/preloaded/ ~/.ivy2 ~/.cache/coursier/
 
 # Build the project with SBT
-RUN sbt 'universal:stage'
+#RUN sbt 'universal:stage'
 
 # Stage 2
 FROM hseeberger/scala-sbt:11.0.10_1.4.9_2.12.13

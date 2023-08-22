@@ -49,7 +49,7 @@ import TodoListRepositoryImpl._
 
   override def updateTodoList(todoList: TodoListDb): F[Unit] =
     postgres.use(_.prepare(updateTodoListCommand).flatMap(
-      _.execute(todoList).void
+      _.execute(todoList.todoListName *: todoList.expiryDate *: EmptyTuple).void
       )
     )
 }
@@ -82,11 +82,10 @@ private object TodoListRepositoryImpl {
       WHERE id = $todoListId
       """.query(todoListDbCodec)
 
-  val updateTodoListCommand: Command[TodoListDb] =
+  val updateTodoListCommand: Command[TodoListName *: ExpiryDate *: EmptyTuple] =
     sql"""
          UPDATE todo_list SET
-           id = $todoListId,
            name = $todoListName,
            expiry_date = $expiryDate
-       """.command.to[TodoListDb]
+       """.command
 }

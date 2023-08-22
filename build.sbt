@@ -6,9 +6,11 @@ ThisBuild / organization := "godfinch.industries"
 ThisBuild / organizationName := "godfinch"
 
 lazy val root = (project in file("."))
+  .configs(IntegrationTest)
   .enablePlugins(Smithy4sCodegenPlugin, JavaServerAppPackaging)
   .settings(
     name := "attention-spanner",
+    Defaults.itSettings,
     libraryDependencies ++=
       List.concat(
         Chimney,
@@ -25,5 +27,9 @@ lazy val root = (project in file("."))
       ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala),
         addCompilerPlugin ("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-    testFrameworks += new TestFramework("munit.Framework")
-  )
+
+
+    testFrameworks
+      ++= List(new TestFramework("weaver.framework.CatsEffect"),
+        new TestFramework("munit.Framework"))
+)

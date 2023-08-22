@@ -103,13 +103,17 @@ object Dependencies {
 
   val TestContainersScala = List(
     "com.dimafeng" %% "testcontainers-scala-munit"      % Version.TestContainersScala,
-    "com.dimafeng" %% "testcontainers-scala-scalatest"  % Version.TestContainersScala,
     "com.dimafeng" %% "testcontainers-scala-postgresql" % Version.TestContainersScala
   )
 
   val ScalaCheckMunit = List(
     "org.typelevel" %% "scalacheck-effect-munit" % Version.ScalacheckEffect
   )
+
+  val Weaver = List(
+    "com.disneystreaming" %% "weaver-cats",
+    "com.disneystreaming" %% "weaver-scalacheck"
+  ).map(_ % "0.8.3" % Test)
 
   /** Plugins */
   val BetterMonadicFor = "com.olegpy" %% "better-monadic-for" % Version.BetterMonadicFor

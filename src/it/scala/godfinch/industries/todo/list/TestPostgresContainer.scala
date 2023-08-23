@@ -26,23 +26,26 @@ class TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
 
   private implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
 
-  private val session: Resource[IO, Session[IO]] =
-    Session.single[IO]( // (2)
-      host = "database",
-      port = 5432,
-      user = "postgres",
-      database = "postgres",
-      password = Some("example")
-    )
 
-  def testPrep() = {
+  def withPostgres[A](runTest: Session[IO] => IO[A]): IO[Unit] = {
     withContainers {
       container =>
+
+        val session: Resource[IO, Session[IO]] = Session.single[IO](
+          host = container.host,
+          port = container.container.getFirstMappedPort,
+          user = container.username,
+          database = container.databaseName,
+          password = Some(container.password)
+        )
+
         for {
           _ <- new SqlMigrator[IO](container.container.getJdbcUrl).run
           deleteTodos: Command[Void] = sql"""DELETE FROM todo_list""".command
           _ <- session.use(_.execute(deleteTodos))
+          _ <- session.use(postgres => runTest(postgres))
         } yield ()
+
     }
   }
 }

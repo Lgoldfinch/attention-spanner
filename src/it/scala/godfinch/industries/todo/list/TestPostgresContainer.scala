@@ -13,7 +13,8 @@ import org.typelevel.log4cats.slf4j.Slf4jLogger
 import skunk.{Command, Session}
 import skunk.implicits.toStringOps
 import skunk.Void
-class TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
+
+trait TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
 
   override val containerDef: PostgreSQLContainer.Def =
     PostgreSQLContainer.Def(
@@ -27,7 +28,7 @@ class TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
   private implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
 
 
-  def withPostgres[A](runTest: Session[IO] => IO[A]): IO[Unit] = {
+  def withPostgres[A](runTest: Resource[IO, Session[IO]] => IO[A]): IO[Unit] = {
     withContainers {
       container =>
 
@@ -43,7 +44,7 @@ class TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
           _ <- new SqlMigrator[IO](container.container.getJdbcUrl).run
           deleteTodos: Command[Void] = sql"""DELETE FROM todo_list""".command
           _ <- session.use(_.execute(deleteTodos))
-          _ <- session.use(postgres => runTest(postgres))
+          _ <- runTest(session)
         } yield ()
 
     }

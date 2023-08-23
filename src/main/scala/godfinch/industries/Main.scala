@@ -40,7 +40,7 @@ object Main extends IOApp {
     for {
       postgres <- session.evalTap(checkPostgresConnection)
       implicit0(logger: Logger[IO]) <- Resource.eval(Slf4jLogger.create[IO])
-      sqlMigrator = new SqlMigrator[IO]
+      sqlMigrator = new SqlMigrator[IO]("jdbc:postgresql://database:5432/postgres")
       _ <- Resource.eval(sqlMigrator.run)
       routes <- Routes.all(postgres)
 

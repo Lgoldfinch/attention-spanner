@@ -5,10 +5,8 @@ import cats.implicits._
 import org.flywaydb.core.Flyway
 import org.typelevel.log4cats.Logger
 
-final class SqlMigrator[F[_]: Sync](implicit logger: Logger[F]) {
+final class SqlMigrator[F[_]: Sync](url: String)(implicit logger: Logger[F]) {
   def run: F[Unit] = {
-    val url = "jdbc:postgresql://database:5432/postgres"
-
     for {
       _ <- Sync[F].blocking(Flyway
         .configure()

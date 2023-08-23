@@ -21,7 +21,7 @@ object Dependencies {
     val MunitDisciplineTest    = "1.0.9"
     val MunitTest              = "0.7.29"
     val CatsEffectTest         = "1.4.0"
-    val TestContainersScala    = "0.39.12"
+    val TestContainersScala    = "0.40.12"
     val ScalacheckEffect       = "1.0.4"
     val ScalaTest              = "3.2.9"
     val ScalaTestPlus          = "3.2.2.0"

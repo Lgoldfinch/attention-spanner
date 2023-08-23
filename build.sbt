@@ -11,6 +11,7 @@ lazy val root = (project in file("."))
   .settings(
     name := "attention-spanner",
     Defaults.itSettings,
+    IntegrationTest / fork := true,
     libraryDependencies ++=
       List.concat(
         Chimney,
@@ -27,8 +28,6 @@ lazy val root = (project in file("."))
       ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala),
         addCompilerPlugin ("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
-
-
     testFrameworks
       ++= List(new TestFramework("weaver.framework.CatsEffect"),
         new TestFramework("munit.Framework"))

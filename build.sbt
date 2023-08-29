@@ -24,10 +24,14 @@ lazy val root = (project in file("."))
         Logging,
         NewType,
         PureConfig,
+        Refined,
         Skunk
       ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala),
         addCompilerPlugin ("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
+      scalacOptions ++= Seq(
+          "-Ymacro-annotations",
+      ),
     testFrameworks
       ++= List(new TestFramework("weaver.framework.CatsEffect"),
         new TestFramework("munit.Framework"))

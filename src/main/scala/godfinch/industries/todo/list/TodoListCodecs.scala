@@ -8,6 +8,8 @@ import skunk.codec.all._
 
 object TodoListCodecs {
   val expiryDate: Codec[ExpiryDate] = instant.imap[ExpiryDate](Timestamp.fromInstant)(_.value.toInstant)
-  val todoListName: Codec[TodoListName] = text.imap[TodoListName](TodoListName(_))(_.value)
+  val todoListName: Codec[TodoListName] =
+    text.eimap[TodoListName](str => RefinementR.Name(str).map(TodoListName(_)))(_.value.str.value)
+
   val todoListId: Codec[TodoListId] = uuid.imap[TodoListId](TodoListId(_))(_.value)
 }

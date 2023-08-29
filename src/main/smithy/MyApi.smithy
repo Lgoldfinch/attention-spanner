@@ -4,14 +4,35 @@ namespace godfinch.industries.attention.spanner
 
 use alloy#simpleRestJson
 use alloy#uuidFormat
+use smithy4s.meta#refinement
+
+@trait(selector: "string")
+structure nonEmptyStringFormat {}
+
+apply godfinch.industries.attention.spanner#nonEmptyStringFormat @refinement(
+  targetType: "godfinch.industries.todo.list.RefinementR.Name"
+)
+
+//apply godfinch.industries.attention.spanner#emailFormat @refinement(
+//  targetType: "godfinch.industries.todo.list.Email"
+//)
+
+@trait(selector: "string")
+structure emailFormat {}
+
+@emailFormat
+string Email
 
 @uuidFormat
 string TodoId
+
+@nonEmptyStringFormat
 string TodoName
 boolean IsCompleted
 
 @uuidFormat
 string TodoListId
+@nonEmptyStringFormat
 string TodoListName
 timestamp ExpiryDate
 

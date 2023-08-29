@@ -21,10 +21,11 @@ object Dependencies {
     val MunitDisciplineTest    = "1.0.9"
     val MunitTest              = "0.7.29"
     val CatsEffectTest         = "1.4.0"
-    val TestContainersScala    = "0.40.12"
+    val Refined                = "0.11.0"
     val ScalacheckEffect       = "1.0.4"
     val ScalaTest              = "3.2.9"
     val ScalaTestPlus          = "3.2.2.0"
+    val TestContainersScala    = "0.40.12"
 
     // Plugins
     val BetterMonadicFor = "0.3.1"
@@ -49,65 +50,65 @@ object Dependencies {
     "com.disneystreaming.smithy4s" %% "smithy4s-http4s-swagger"
   )
 
-  val Skunk = List("org.tpolecat" %% "skunk-core").map(_ % Version.Skunk)
 
   val Enumeratum = List(
-    "com.beachape" %% "enumeratum",
-    "com.beachape" %% "enumeratum-circe"
+  "com.beachape" %% "enumeratum",
+  "com.beachape" %% "enumeratum-circe"
   ).map(_ % Version.Enumeratum)
 
   val FlywayDb = List(
-    "org.flywaydb"   % "flyway-core" % Version.FlywayDb,
-    "org.postgresql" % "postgresql"  % Version.PostgresJdbc
+  "org.flywaydb"   % "flyway-core" % Version.FlywayDb,
+  "org.postgresql" % "postgresql"  % Version.PostgresJdbc
   )
 
   val Fs2Circe = List(
-    "io.circe" %% "circe-fs2" % Version.Fs2Circe
+  "io.circe" %% "circe-fs2" % Version.Fs2Circe
   )
 
   val Http4s = List(
-    "org.http4s" %% "http4s-ember-client",
-    "org.http4s" %% "http4s-ember-server",
-    "org.http4s" %% "http4s-circe"
+  "org.http4s" %% "http4s-ember-client",
+  "org.http4s" %% "http4s-ember-server",
+  "org.http4s" %% "http4s-circe"
   ).map(_ % Version.Http4s)
 
   val Logging = List(
-//    "ch.qos.logback" % "logback-classic" % Version.Logback,
     "org.typelevel"  %% "log4cats-slf4j" % Version.Log4Cats
   )
 
   val NewType = List(
-    "io.estatico" %% "newtype" % Version.NewType
+  "io.estatico" %% "newtype" % Version.NewType
   )
 
   val PureConfig = List(
-    "com.github.pureconfig" %% "pureconfig"      % Version.PureConfig,
-    "com.github.pureconfig" %% "pureconfig-cats" % Version.PureConfig
+  "com.github.pureconfig" %% "pureconfig"      % Version.PureConfig,
+  "com.github.pureconfig" %% "pureconfig-cats" % Version.PureConfig
   )
 
-  // Test
+  val Refined = List("eu.timepit" %% "refined").map(_ % Version.Refined)
+
+  val Skunk = List("org.tpolecat" %% "skunk-core").map(_ % Version.Skunk)
+
+  val CatsEffectTest = List(
+  "org.typelevel" %% "cats-effect-testing-scalatest" % Version.CatsEffectTest
+  )
 
   val MCatsEffectTest = List(
     "org.typelevel" %% "munit-cats-effect-3" % Version.MCatsEffectTest
   )
 
-  val CatsEffectTest = List(
-    "org.typelevel" %% "cats-effect-testing-scalatest" % Version.CatsEffectTest
+  val MunitTest = List(
+  "org.scalameta" %% "munit"                 % Version.MunitTest,
+  "org.scalameta" %% "munit-scalacheck"      % Version.MunitTest,
+  "com.beachape"  %% "enumeratum-scalacheck" % Version.Enumeratum
   )
 
-  val MunitTest = List(
-    "org.scalameta" %% "munit"                 % Version.MunitTest,
-    "org.scalameta" %% "munit-scalacheck"      % Version.MunitTest,
-    "com.beachape"  %% "enumeratum-scalacheck" % Version.Enumeratum
+  val ScalaCheckMunit = List(
+  "org.typelevel" %% "scalacheck-effect-munit" % Version.ScalacheckEffect
   )
 
   val TestContainersScala = List(
     "com.dimafeng" %% "testcontainers-scala-munit"      % Version.TestContainersScala,
     "com.dimafeng" %% "testcontainers-scala-postgresql" % Version.TestContainersScala
-  )
-
-  val ScalaCheckMunit = List(
-    "org.typelevel" %% "scalacheck-effect-munit" % Version.ScalacheckEffect
   )
 
   val Weaver = List(

@@ -10,18 +10,8 @@ use smithy4s.meta#refinement
 structure nonEmptyStringFormat {}
 
 apply godfinch.industries.attention.spanner#nonEmptyStringFormat @refinement(
-  targetType: "godfinch.industries.todo.list.RefinementR.Name"
+  targetType: "godfinch.industries.utils.NonEmptyStringFormatR"
 )
-
-//apply godfinch.industries.attention.spanner#emailFormat @refinement(
-//  targetType: "godfinch.industries.todo.list.Email"
-//)
-
-@trait(selector: "string")
-structure emailFormat {}
-
-@emailFormat
-string Email
 
 @uuidFormat
 string TodoId

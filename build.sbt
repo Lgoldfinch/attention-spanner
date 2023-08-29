@@ -36,3 +36,5 @@ lazy val root = (project in file("."))
       ++= List(new TestFramework("weaver.framework.CatsEffect"),
         new TestFramework("munit.Framework"))
 )
+
+Global / onChangedBuildSource := ReloadOnSourceChanges

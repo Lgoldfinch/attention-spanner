@@ -24,9 +24,9 @@ trait TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
       password = "example"
     )
 
+  override def afterContainersStart(containers: PostgreSQLContainer): Unit = new SqlMigrator[IO](containers.jdbcUrl).run.unsafeRunSync
 
   private implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
-
 
   def withPostgres[A](runTest: Resource[IO, Session[IO]] => IO[A]): IO[Unit] = {
     withContainers {
@@ -40,9 +40,8 @@ trait TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
           password = Some(container.password)
         )
 
+        val deleteTodos: Command[Void] = sql"""DELETE FROM todo_list""".command
         for {
-          _ <- new SqlMigrator[IO](container.container.getJdbcUrl).run
-          deleteTodos: Command[Void] = sql"""DELETE FROM todo_list""".command
           _ <- session.use(_.execute(deleteTodos))
           _ <- runTest(session)
         } yield ()

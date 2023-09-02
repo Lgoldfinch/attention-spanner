@@ -18,12 +18,15 @@ string TodoId
 
 @nonEmptyStringFormat
 string TodoName
+
 boolean IsCompleted
 
 @uuidFormat
 string TodoListId
+
 @nonEmptyStringFormat
 string TodoListName
+
 timestamp ExpiryDate
 
 structure Todo {

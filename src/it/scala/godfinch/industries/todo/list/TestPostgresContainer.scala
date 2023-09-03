@@ -41,6 +41,7 @@ trait TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
         )
 
         val deleteTodos: Command[Void] = sql"""DELETE FROM todo_list""".command
+
         for {
           _ <- session.use(_.execute(deleteTodos))
           _ <- runTest(session)

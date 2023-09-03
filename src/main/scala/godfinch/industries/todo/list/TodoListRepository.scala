@@ -49,7 +49,7 @@ import TodoListRepositoryImpl._
 
   override def updateTodoList(todoList: TodoListDb): F[Unit] =
     postgres.use(_.prepare(updateTodoListCommand).flatMap(
-      _.execute(todoList.todoListName *: todoList.expiryDate *: todoList.id *:EmptyTuple).void
+      _.execute(todoList.todoListName *: todoList.expiryDate *: todoList.id *: EmptyTuple).void
       )
     )
 }

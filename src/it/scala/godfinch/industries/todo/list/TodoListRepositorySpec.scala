@@ -14,7 +14,7 @@ import java.util.Date
 
 class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuite {
 
-//  override def beforeAll(): Unit = super.beforeAll()
+  //  override def beforeAll(): Unit = super.beforeAll()
   def newtypeGen[A, B](gen: Gen[A])(f: A => B): Gen[B] = gen.map(f)
 
   def localDateTimeGen: Gen[LocalDateTime] = {
@@ -34,8 +34,9 @@ class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffect
 
   val todoListIdGen: Gen[TodoListId] = newtypeGen(Gen.uuid)(TodoListId.apply)
   val todoListNameGen: Gen[TodoListName] = newtypeGen(Gen.nonEmptyListOf(Gen.alphaNumChar).map(_.mkString))(str => TodoListName(NonEmptyStringFormatR(str).toOption.get)) // TODO make this less awful
-  val expiryDateGen: Gen[ExpiryDate] = newtypeGen(localDateTimeGen){localDateTime =>
-    ExpiryDate(Timestamp.fromEpochSecond(localDateTime.toEpochSecond(ZoneOffset.UTC)))}
+  val expiryDateGen: Gen[ExpiryDate] = newtypeGen(localDateTimeGen) { localDateTime =>
+    ExpiryDate(Timestamp.fromEpochSecond(localDateTime.toEpochSecond(ZoneOffset.UTC)))
+  }
 
   val todoListGen: Gen[TodoListDb] =
     for {
@@ -44,7 +45,7 @@ class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffect
       expiryDate <- expiryDateGen
     } yield TodoListDb(todoListId, todoListName, expiryDate)
 
-  test("inserting and getting a todo list") {
+  test("inserting and retrieving a todo list") {
     PropF.forAllF(todoListGen) {
       todoList =>
         withPostgres {
@@ -57,27 +58,44 @@ class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffect
             } yield assertEquals(res, Some(todoList))
         }
     }
+  }
+
+  test("deleting a todo list should delete the todo list and it's incumbent todos") {
+    PropF.forAllF(todoListGen) {
+      todoList =>
+        withPostgres {
+          postgres =>
+            val todoListRepository = new TodoListRepositoryImpl[IO](postgres)
+            val todoRepository = new TodoRepositoryImpl[IO](postgres)
+
+            for {
+              _ <- todoListRepository.insertTodoList(todoList)
+              _ <- todoListRepository.deleteTodoList(todoList.id)
+              result1 <- todoListRepository.getTodoList(todoList.id)
+              result2 <- todoRepository.getTodos(todoList.id)
+              _ = assertEquals(result1, None)
+              _ = assertEquals(result2, List.empty[TodoDb])
+            } yield ()
+        }
     }
+  }
 
-  test("deleting a todo list should delete the todo list and it's incumbent todos ") {
-     PropF.forAllF(todoListGen) {
-       todoList =>
-         withPostgres {
-           postgres =>
-             val todoListRepository = new TodoListRepositoryImpl[IO](postgres)
-             val todoRepository = new TodoRepositoryImpl[IO](postgres)
+  test("updating a todo list") {
+    PropF.forAllF(todoListGen, expiryDateGen, todoListNameGen) {
+      (todoList, expiryDate, todoListName) =>
+        withPostgres {
+          postgres =>
+            val todoListRepository = new TodoListRepositoryImpl[IO](postgres)
 
-             for {
-               _ <- todoListRepository.insertTodoList(todoList)
-               _ <- todoListRepository.deleteTodoList(todoList.id)
-               result1 <- todoListRepository.getTodoList(todoList.id)
-               result2 <- todoRepository.getTodos(todoList.id)
-               _ =  assertEquals(result1, None)
-               _ =  assertEquals(result2, List.empty[TodoDb])
-             } yield {
+            for {
+              _ <- todoListRepository.insertTodoList(todoList)
+              _ <- todoListRepository.updateTodoList(todoList.copy(todoListName = todoListName, expiryDate = expiryDate))
+              result <- todoListRepository.getTodoList(todoList.id)
+              _ = assertEquals(result.map(_.todoListName), Some(todoListName))
+              _ = assertEquals(result.map(_.expiryDate), Some(expiryDate))
+            } yield ()
 
-             }
-         }
-     }
+        }
+    }
   }
 }

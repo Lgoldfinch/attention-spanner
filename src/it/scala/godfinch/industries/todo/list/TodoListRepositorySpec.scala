@@ -13,37 +13,7 @@ import java.time.{Instant, LocalDate, LocalDateTime, ZoneOffset}
 import java.util.Date
 
 class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuite {
-
-  //  override def beforeAll(): Unit = super.beforeAll()
-  def newtypeGen[A, B](gen: Gen[A])(f: A => B): Gen[B] = gen.map(f)
-
-  def localDateTimeGen: Gen[LocalDateTime] = {
-    val currentDateTime = LocalDateTime.now()
-    val minDateTime = currentDateTime.minusYears(1)
-    val maxDateTime = currentDateTime.plusYears(1)
-
-    val minEpochSeconds = minDateTime.toEpochSecond(ZoneOffset.UTC)
-    val maxEpochSeconds = maxDateTime.toEpochSecond(ZoneOffset.UTC)
-
-    val epochSecondsGen = Gen.chooseNum(minEpochSeconds, maxEpochSeconds)
-
-    epochSecondsGen.map(epochSeconds =>
-      LocalDateTime.ofEpochSecond(epochSeconds, 0, ZoneOffset.UTC)
-    )
-  }
-
-  val todoListIdGen: Gen[TodoListId] = newtypeGen(Gen.uuid)(TodoListId.apply)
-  val todoListNameGen: Gen[TodoListName] = newtypeGen(Gen.nonEmptyListOf(Gen.alphaNumChar).map(_.mkString))(str => TodoListName(NonEmptyStringFormatR(str).toOption.get)) // TODO make this less awful
-  val expiryDateGen: Gen[ExpiryDate] = newtypeGen(localDateTimeGen) { localDateTime =>
-    ExpiryDate(Timestamp.fromEpochSecond(localDateTime.toEpochSecond(ZoneOffset.UTC)))
-  }
-
-  val todoListGen: Gen[TodoListDb] =
-    for {
-      todoListId <- todoListIdGen
-      todoListName <- todoListNameGen
-      expiryDate <- expiryDateGen
-    } yield TodoListDb(todoListId, todoListName, expiryDate)
+  import godfinch.industries.todo.TodoGenerators._
 
   test("inserting and retrieving a todo list") {
     PropF.forAllF(todoListGen) {

@@ -1,18 +1,15 @@
-package godfinch.industries.todo.list
+package godfinch.industries
 
-import cats.effect.std.CountDownLatch
 import cats.effect.{IO, Resource}
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import com.dimafeng.testcontainers.munit.TestContainerForAll
-import godfinch.industries.SqlMigrator
 import munit.CatsEffectSuite
 import natchez.Trace.Implicits.noop
 import org.testcontainers.utility.DockerImageName
 import org.typelevel.log4cats.SelfAwareStructuredLogger
 import org.typelevel.log4cats.slf4j.Slf4jLogger
-import skunk.{Command, Session}
 import skunk.implicits.toStringOps
-import skunk.Void
+import skunk.{Command, Session, Void}
 
 trait TestPostgresContainer extends CatsEffectSuite with TestContainerForAll {
 

@@ -1,5 +1,6 @@
 package godfinch.industries.utils
 
+import eu.timepit.refined.types.string.NonEmptyString
 import org.scalacheck.Gen
 
 import java.time.{LocalDateTime, ZoneOffset}
@@ -21,4 +22,9 @@ object GeneralGenerators {
       LocalDateTime.ofEpochSecond(epochSeconds, 0, ZoneOffset.UTC)
     )
   }
+
+  def nonEmptyStringFormatGen[A](f: NonEmptyString => A): Gen[A] = newtypeGen(Gen.nonEmptyListOf(Gen.alphaNumChar).map(_.mkString))(
+    str => f(NonEmptyString.unsafeFrom(str))
+  )// TODO make this less awful
+
 }

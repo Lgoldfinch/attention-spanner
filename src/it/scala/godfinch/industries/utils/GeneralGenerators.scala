@@ -1,5 +1,6 @@
 package godfinch.industries.utils
 
+import cats.data.NonEmptyList
 import eu.timepit.refined.types.string.NonEmptyString
 import org.scalacheck.Gen
 
@@ -27,4 +28,8 @@ object GeneralGenerators {
     str => f(NonEmptyString.unsafeFrom(str))
   )// TODO make this less awful
 
+  def nonEmptyListGen[A](gen: Gen[A]): Gen[NonEmptyList[A]] = for {
+    g <- gen
+    gs <- Gen.listOf(gen)
+  } yield NonEmptyList(g, gs)
 }

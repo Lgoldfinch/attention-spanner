@@ -1,5 +1,6 @@
 package godfinch.industries.todo.todos
 
+import cats.data.NonEmptyList
 import godfinch.industries.attention.spanner.{IsCompleted, TodoDb, TodoId, TodoName}
 import godfinch.industries.todo.list.TodoListGenerators.todoListIdGen
 import godfinch.industries.utils.NonEmptyStringFormatR

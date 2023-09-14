@@ -6,7 +6,7 @@ import munit.ScalaCheckEffectSuite
 import org.scalacheck.effect.PropF
 
 class TodoListRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuite {
-  import godfinch.industries.todo.todos.TodoGenerators._
+  import TodoListGenerators._
 
   test("inserting and retrieving a todo list") {
     PropF.forAllF(todoListGen) {

@@ -1,7 +1,7 @@
 package godfinch.industries.todo.todos
 
 import cats.data.NonEmptyList
-import godfinch.industries.attention.spanner.{IsCompleted, TodoDb, TodoId, TodoName}
+import godfinch.industries.attention.spanner.{IsCompleted, Todo, TodoDb, TodoId, TodoName}
 import godfinch.industries.todo.list.TodoListGenerators.todoListIdGen
 import godfinch.industries.utils.NonEmptyStringFormatR
 import org.scalacheck.Gen
@@ -16,10 +16,16 @@ object TodoGenerators {
 
   val isCompleted: Gen[IsCompleted] = newtypeGen(Gen.oneOf(true, false))(IsCompleted.apply)
 
-  val todoGen: Gen[TodoDb] = for {
-    id <- todoIdGen
+  val todoGen: Gen[Todo] = for {
+    name <- todoNameGen
+    isCompleted <- isCompleted
+  } yield Todo(name, isCompleted)
+
+  val todoDbGen: Gen[TodoDb] = for {
+            id <- todoIdGen
     todoListId <- todoListIdGen
     name <- todoNameGen
     isCompleted <- isCompleted
   } yield TodoDb(id, todoListId, name, isCompleted)
+
 }

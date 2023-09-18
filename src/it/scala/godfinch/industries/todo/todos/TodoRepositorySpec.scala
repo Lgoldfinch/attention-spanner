@@ -16,7 +16,7 @@ class TodoRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuit
   import godfinch.industries.todo.list.TodoListGenerators._
 
   test("inserting todo and retrieving by todoListId should only return the relevant todos.") {
-      PropF.forAllF(nonEmptyListGen(todoGen), todoGen, todoListGen, todoListGen) {
+      PropF.forAllF(nonEmptyListGen(todoDbGen), todoDbGen, todoListGen, todoListGen) {
         (todos, todo, todoList1, todoList2) =>
           withPostgres {
             postgres =>

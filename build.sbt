@@ -1,4 +1,4 @@
-import Dependencies._
+import Dependencies.*
 
 ThisBuild / scalaVersion := "2.13.9"
 ThisBuild / version := "0.1.0-SNAPSHOT"
@@ -23,6 +23,7 @@ lazy val root = (project in file("."))
         Http4s,
         Logging,
         NewType,
+        Monocle,
         PureConfig,
         Refined,
         Skunk

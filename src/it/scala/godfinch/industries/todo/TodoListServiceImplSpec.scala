@@ -3,12 +3,13 @@ package godfinch.industries.todo
 import cats.effect.IO
 import godfinch.industries.TestPostgresContainer
 import godfinch.industries.todo.list.TodoListRepositoryImpl
-import godfinch.industries.todo.todos.{TodoRepository, TodoRepositoryImpl}
+import godfinch.industries.todo.todos.TodoRepositoryImpl
 import godfinch.industries.utils.GeneralGenerators.nonEmptyListGen
-import munit.ScalaCheckSuite
+import munit.{ScalaCheckEffectSuite, ScalaCheckSuite}
 import org.scalacheck.effect.PropF
+import cats.implicits._
 
-class TodoListServiceImplSpec extends TestPostgresContainer with ScalaCheckSuite {
+class TodoListServiceImplSpec extends TestPostgresContainer with ScalaCheckEffectSuite {
   import godfinch.industries.todo.list.TodoListGenerators._
   import godfinch.industries.todo.todos.TodoGenerators._
 
@@ -23,7 +24,9 @@ class TodoListServiceImplSpec extends TestPostgresContainer with ScalaCheckSuite
 
             for {
               _ <- todoRepositoryService.createTodoList(todoList.todoListName, todoList.expiryDate, todos.toList)
-              _ <- todoRepositoryService.getTodoList()
+              todoListResult <- todoListRepository.getTodoListByName(todoList.todoListName)
+              todosResult <- todoListResult.traverse(todoList => todoRepository.getTodos(todoList.id))
+              _ = assertEquals(todosResult.map(_.map(_.name)), Some(todos.toList.map(_.name)))
             } yield ()
         }
     }

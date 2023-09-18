@@ -21,8 +21,6 @@ class TodoRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuit
           withPostgres {
             postgres =>
 
-
-
               val todosWithMatchingTodoListId = {
                 val todoListId = todos.head.todoListId
                 todos.map(_.copy(todoListId = todoListId))

@@ -5,22 +5,23 @@ import cats.{Applicative, Monad}
 import godfinch.industries.attention.spanner._
 import godfinch.industries.todo.list.TodoListRepository
 import godfinch.industries.todo.todos.TodoRepository
+import godfinch.industries.utils.{GenUUID, ID}
 import smithy4s.Timestamp
 
 import java.util.UUID
 
-final class TodoListServiceImpl[F[_]: Monad](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
-
+final class TodoListServiceImpl[F[_]: GenUUID: Monad](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
   override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = {
-      val todoListId = TodoListId(UUID.randomUUID())
       for {
+        todoListId <- ID.make[F, UUID].map(TodoListId.apply)
         _ <- todoListRepository.insertTodoList(TodoListDb(todoListId, todoListName, expiryDate))
-        todosWithIds = todos.map{ todo =>
-          val todoId = UUID.randomUUID()
-          TodoDb(todoId, todoListId, todo.name, todo.isCompleted)
-        }.toNel
-        _ <- todosWithIds.fold(Applicative[F].unit)(todoRepository.insertTodos)
-      } yield ()
+        todosWithIds <- todos.traverse(todo =>
+          ID.make[F, UUID].map {
+            id => TodoDb(id, todoListId, todo.name, todo.isCompleted)
+          }
+        )
+        _ <- todosWithIds.toNel.fold(Applicative[F].unit)(todoRepository.insertTodos)
+      } yield todoListId
     }
 
   override def deleteTodoList(todoListId: TodoListId): F[Unit] = todoListRepository.deleteTodoList(todoListId)

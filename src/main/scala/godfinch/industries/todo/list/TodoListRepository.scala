@@ -46,6 +46,11 @@ import TodoListRepositoryImpl._
       _.option(todoListId)
     )
   )
+  def getTodoListByName(name: TodoListName): F[Option[TodoListDb]] =
+    postgres.use(_.prepare(getTodoListByNameQuery).flatMap(
+      _.option(name)
+    )
+  )
 
   override def updateTodoList(todoList: TodoListDb): F[Unit] =
     postgres.use(_.prepare(updateTodoListCommand).flatMap(
@@ -80,6 +85,12 @@ private object TodoListRepositoryImpl {
     sql"""
       SELECT id, name, expiry_date FROM todo_list
       WHERE id = $todoListId
+      """.query(todoListDbCodec)
+
+  val getTodoListByNameQuery: Query[TodoListName, TodoListDb] =
+    sql"""
+      SELECT id, name, expiry_date FROM todo_list
+      WHERE name = $todoListName
       """.query(todoListDbCodec)
 
   val updateTodoListCommand: Command[TodoListName *: ExpiryDate *: TodoListId *: EmptyTuple] =

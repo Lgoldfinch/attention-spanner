@@ -3,13 +3,10 @@ package godfinch.industries.todo.todos
 import cats.data.NonEmptyList
 import cats.effect.IO
 import godfinch.industries.TestPostgresContainer
-import godfinch.industries.attention.spanner.{TodoList, TodoListDb, TodoListId}
 import godfinch.industries.todo.list.TodoListRepositoryImpl
 import godfinch.industries.utils.GeneralGenerators.nonEmptyListGen
 import munit.ScalaCheckEffectSuite
 import org.scalacheck.effect.PropF
-
-import java.util.UUID
 
 class TodoRepositorySpec extends TestPostgresContainer with ScalaCheckEffectSuite {
   import TodoGenerators._

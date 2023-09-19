@@ -1,27 +1,24 @@
 package godfinch.industries.todo
 
-import cats.data.NonEmptyList
 import cats.implicits._
 import cats.{Applicative, Monad}
 import godfinch.industries.attention.spanner._
 import godfinch.industries.todo.list.TodoListRepository
 import godfinch.industries.todo.todos.TodoRepository
-import godfinch.industries.utils.{GenUUID, ID}
+import godfinch.industries.utils.uuid.{GenUUID, ID}
 import smithy4s.Timestamp
-
-import java.util.UUID
 
 final class TodoListServiceImpl[F[_]: GenUUID: Monad](todoRepository: TodoRepository[F], todoListRepository: TodoListRepository[F]) extends TodoListService[F] {
 
   private def enrichTodo(todo: Todo, todoListId: TodoListId): F[TodoDb] = {
-    ID.make[F, UUID].map {
+    ID.make[F, TodoId].map {
       id => TodoDb(id, todoListId, todo.name, todo.isCompleted)
     }
   }
 
   override def createTodoList(todoListName: TodoListName, expiryDate: ExpiryDate, todos: List[Todo]): F[Unit] = {
       for {
-        todoListId <- ID.make[F, UUID].map(TodoListId.apply)
+        todoListId <- ID.make[F, TodoListId]
         _ <- todoListRepository.insertTodoList(TodoListDb(todoListId, todoListName, expiryDate))
         todosWithIds <- todos.traverse(enrichTodo(_, todoListId))
         _ <- todosWithIds.toNel.fold(Applicative[F].unit)(todoRepository.insertTodos)

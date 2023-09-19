@@ -1,4 +1,4 @@
-package godfinch.industries.utils
+package godfinch.industries.utils.uuid
 
 import cats.Functor
 import cats.implicits._

@@ -1,8 +1,7 @@
-package godfinch.industries.utils
+package godfinch.industries.utils.uuid
 
 import cats.ApplicativeThrow
 import cats.effect.Sync
-import monocle.Iso
 
 import java.util.UUID
 

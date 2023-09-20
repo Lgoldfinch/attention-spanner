@@ -9,6 +9,7 @@ import org.typelevel.log4cats.Logger
 import skunk.Session
 import skunk.codec.all.text
 import skunk.implicits._
+import cats.implicits._
 
 sealed abstract class AppResources[F[_]](
                                           val postgres: Resource[F, Session[F]]
@@ -16,9 +17,10 @@ sealed abstract class AppResources[F[_]](
 
 object AppResources {
   def make[F[_]: Console: Logger: MonadCancelThrow: Network: Temporal]: Resource[F, AppResources[F]] = {
-      def checkPostgresConnection(
-                                         postgres: Resource[F, Session[F]]
-                                       ): F[Unit] =
+
+    def checkPostgresConnection(
+                                 postgres: Resource[F, Session[F]]
+                               ): F[Unit] =
       postgres.use { session =>
         session.unique(sql"select version();".query(text)).flatMap { v =>
           Logger[F].info(s"Connected to Postgres $v.")
@@ -35,7 +37,10 @@ object AppResources {
         max = 16
       ).evalTap(checkPostgresConnection)
 
-
     mkPostgresResource.map(new AppResources[F](_) {})
   }
+
+
+
+
 }

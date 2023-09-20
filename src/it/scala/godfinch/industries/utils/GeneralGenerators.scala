@@ -24,9 +24,14 @@ object GeneralGenerators {
     )
   }
 
-  def nonEmptyStringFormatGen[A](f: NonEmptyString => A): Gen[A] = newtypeGen(Gen.nonEmptyListOf(Gen.alphaNumChar).map(_.mkString))(
+  def nonEmptyStringFormatGen[A](f: NonEmptyString => A): Gen[A] = newtypeGen(
+    Gen
+      .chooseNum(1, 20)
+      .flatMap { n  =>
+        Gen.buildableOfN[String, Char](n, Gen.alphaChar)
+      })(
     str => f(NonEmptyString.unsafeFrom(str))
-  )// TODO make this less awful
+  )
 
   def nonEmptyListGen[A](gen: Gen[A]): Gen[NonEmptyList[A]] = for {
     g <- gen

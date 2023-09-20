@@ -15,7 +15,7 @@ object PostgresSuite extends ResourceSuite {
     port = 5432,
     user = "postgres",
     database = "db",
-    password = Some("my-password"),
+    password = Some("example"),
     max = 10
   ).beforeAll(_.use(
     s => flushTables.traverse_(s.execute)

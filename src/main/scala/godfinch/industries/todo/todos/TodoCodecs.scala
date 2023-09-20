@@ -1,7 +1,7 @@
 package godfinch.industries.todo.todos
 
 import godfinch.industries.attention.spanner._
-import godfinch.industries.utils.NonEmptyStringFormatR
+import godfinch.industries.utils.SmithyRefinements.NonEmptyStringFormatR
 import skunk.Codec
 import skunk.codec.all._
 

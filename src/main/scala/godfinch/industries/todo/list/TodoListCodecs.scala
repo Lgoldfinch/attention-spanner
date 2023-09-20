@@ -2,7 +2,7 @@ package godfinch.industries.todo.list
 
 import godfinch.industries.attention.spanner.{ExpiryDate, TodoListId, TodoListName}
 import godfinch.industries.todo.CodecUtils.instant
-import godfinch.industries.utils.NonEmptyStringFormatR
+import godfinch.industries.utils.SmithyRefinements.NonEmptyStringFormatR
 import skunk.Codec
 import smithy4s.Timestamp
 import skunk.codec.all._

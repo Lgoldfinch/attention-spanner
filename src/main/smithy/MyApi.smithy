@@ -10,7 +10,7 @@ use smithy4s.meta#refinement
 structure nonEmptyStringFormat {}
 
 apply godfinch.industries.attention.spanner#nonEmptyStringFormat @refinement(
-  targetType: "godfinch.industries.utils.NonEmptyStringFormatR"
+  targetType: "godfinch.industries.utils.SmithyRefinements.NonEmptyStringFormatR"
 )
 
 @uuidFormat

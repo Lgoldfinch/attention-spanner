@@ -6,7 +6,7 @@ import skunk.implicits.toStringOps
 import skunk.{Command, Session}
 import cats.implicits._
 
-object PostgresSuite extends ResourceSuite {
+trait PostgresSuite extends ResourceSuite {
 
   override type Res = Resource[IO, Session[IO]]
 

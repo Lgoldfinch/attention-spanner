@@ -7,9 +7,13 @@ ThisBuild / organizationName := "godfinch"
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
-  .enablePlugins(Smithy4sCodegenPlugin, JavaServerAppPackaging)
+  .enablePlugins(Smithy4sCodegenPlugin, DockerPlugin, AshScriptPlugin)
   .settings(
     name := "attention-spanner",
+    dockerExposedPorts ++= Seq(8080),
+    dockerUpdateLatest := true,
+    dockerBaseImage := "openjdk:11-jre-slim-buster",
+    makeBatScripts  := Seq(),
     Defaults.itSettings,
     IntegrationTest / fork := true,
     libraryDependencies ++=

@@ -73,8 +73,9 @@ object Dependencies {
   ).map(_ % Version.Http4s)
 
   val Logging = List(
-    "org.typelevel"  %% "log4cats-slf4j" % Version.Log4Cats
-  )
+    "org.typelevel"  %% "log4cats-slf4j",
+    "org.typelevel"  %% "log4cats-noop"
+  ).map(_ % Version.Log4Cats)
 
   val NewType = List(
   "io.estatico" %% "newtype" % Version.NewType
@@ -119,7 +120,7 @@ object Dependencies {
   val Weaver = List(
     "com.disneystreaming" %% "weaver-cats",
     "com.disneystreaming" %% "weaver-scalacheck"
-  ).map(_ % "0.8.3" % Test)
+  ).map(_ % "0.8.3")
 
   /** Plugins */
   val BetterMonadicFor = "com.olegpy" %% "better-monadic-for" % Version.BetterMonadicFor

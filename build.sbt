@@ -1,9 +1,13 @@
 import Dependencies.*
 
 ThisBuild / scalaVersion := "2.13.9"
-ThisBuild / version := "0.1.0-SNAPSHOT"
+ThisBuild / version := "1.0.0"
 ThisBuild / organization := "godfinch.industries"
 ThisBuild / organizationName := "godfinch"
+
+resolvers ++= Resolver.sonatypeOssRepos("snapshots")
+
+lazy val IntegrationTest = config("it") extend(Test)
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
@@ -31,15 +35,13 @@ lazy val root = (project in file("."))
         PureConfig,
         Refined,
         Skunk
-      ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver),
+      ) ++ List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver).map(_ % Test),
         addCompilerPlugin ("org.typelevel" %% "kind-projector" % "0.13.2" cross CrossVersion.full),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.1"),
       scalacOptions ++= Seq(
           "-Ymacro-annotations",
       ),
-    testFrameworks
-      ++= List(new TestFramework("weaver.framework.CatsEffect"),
-        new TestFramework("munit.Framework"))
-)
+      testFrameworks += new TestFramework("weaver.framework.CatsEffect")
+  )
 
 Global / onChangedBuildSource := ReloadOnSourceChanges

@@ -1,24 +1,39 @@
 package godfinch.industries
 
+import cats.Show
 import cats.effect.{IO, Resource}
 import natchez.Trace.Implicits.noop
 import skunk.implicits.toStringOps
 import skunk.{Command, Session}
 import cats.implicits._
+import godfinch.industries.attention.spanner.TodoListDb
+import godfinch.industries.todo.list.TodoListGenerators._
+import godfinch.industries.todo.list.TodoListRepositoryImpl
+import org.typelevel.log4cats.noop.NoOpLogger
+import skunk._
 
-trait PostgresSuite extends ResourceSuite {
+object PostgresSuite extends ResourceSuite {
 
   override type Res = Resource[IO, Session[IO]]
 
+    implicit val showTodoDb: Show[TodoListDb] = new Show[TodoListDb] {
+      override def show(t: TodoListDb): String = t.toString
+    }
+
+  implicit val noopLogger = NoOpLogger[IO]
   override def sharedResource: Resource[IO, Res] = Session.pooled[IO](
-    host = "localhost",
+    host = "database",
     port = 5432,
     user = "postgres",
-    database = "db",
+    database = "postgres",
     password = Some("example"),
     max = 10
   ).beforeAll(_.use(
-    s => flushTables.traverse_(s.execute)
+    s =>
+      for {
+//        _ <- new SqlMigrator("jdbc:postgresql://database:5432/postgres").run.void
+        _ <- flushTables.traverse_(s.execute)
+      } yield ()
   ))
 
   val flushTables: List[Command[Void]] =
@@ -27,4 +42,20 @@ trait PostgresSuite extends ResourceSuite {
     ).map { table =>
       sql"DELETE FROM #$table".command
     }
+
+  test("inserting and retrieving todo list") { postgres =>
+    forall(todoListGen) {
+      todoList =>
+        val todoListRepository = new TodoListRepositoryImpl[IO](postgres)
+
+        for {
+          beforeTest <- todoListRepository.getTodoList(todoList.id)
+          _ <- todoListRepository.insertTodoList(todoList)
+          afterTest <- todoListRepository.getTodoList(todoList.id)
+        } yield expect.all(
+          beforeTest.isEmpty,
+          afterTest.isDefined
+        )
+    }
+  }
 }

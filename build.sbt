@@ -11,13 +11,14 @@ lazy val IntegrationTest = config("it") extend(Test)
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
-  .enablePlugins(Smithy4sCodegenPlugin, DockerPlugin, AshScriptPlugin)
+  .enablePlugins(AshScriptPlugin, DockerPlugin, ScalaJSPlugin, Smithy4sCodegenPlugin)
   .settings(
     name := "attention-spanner",
     dockerExposedPorts ++= Seq(8080),
     dockerUpdateLatest := true,
     dockerBaseImage := "openjdk:11-jre-slim-buster",
     makeBatScripts  := Seq(),
+    scalaJSUseMainModuleInitializer := true,
     Defaults.itSettings,
     IntegrationTest / fork := true,
     libraryDependencies ++=
@@ -25,6 +26,7 @@ lazy val root = (project in file("."))
         Chimney,
         CirceExtras,
         DisneyStreaming.map(_ % smithy4sVersion.value), // mapping cannot be done within Dependencies
+        Derevo,
         Enumeratum,
         FlywayDb,
         Fs2Circe,

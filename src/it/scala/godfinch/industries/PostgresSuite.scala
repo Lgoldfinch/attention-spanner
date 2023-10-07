@@ -16,10 +16,6 @@ object PostgresSuite extends ResourceSuite {
 
   override type Res = Resource[IO, Session[IO]]
 
-    implicit val showTodoDb: Show[TodoListDb] = new Show[TodoListDb] {
-      override def show(t: TodoListDb): String = t.toString
-    }
-
   implicit val noopLogger = NoOpLogger[IO]
   override def sharedResource: Resource[IO, Res] = Session.pooled[IO](
     host = "database",

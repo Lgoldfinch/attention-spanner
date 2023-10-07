@@ -1,6 +1,6 @@
 package godfinch.industries.todo.list
 
-import godfinch.industries.attention.spanner.{ExpiryDate, TodoListDb, TodoListId, TodoListName}
+import godfinch.industries.attention.spanner.{ExpiryDate, TodoListId, TodoListName}
 import godfinch.industries.utils.SmithyRefinements.NonEmptyStringFormatR
 import org.scalacheck.Gen
 import smithy4s.Timestamp

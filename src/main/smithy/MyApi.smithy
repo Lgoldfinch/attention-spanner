@@ -52,7 +52,7 @@ list Todos {
 }
 
 list AllTodoLists {
-  member: TodoListDb
+  member: TodoListWithId
 }
 
 structure TodoList {
@@ -64,7 +64,7 @@ structure TodoList {
   todos: Todos
 }
 
-structure TodoListDb {
+structure TodoListWithId {
   @required
   id: TodoListId
   @required

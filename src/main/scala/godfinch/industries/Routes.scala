@@ -12,7 +12,6 @@ import skunk.Session
 
 object Routes {
 
-
   def all(postgres: Resource[IO, Session[IO]]): Resource[IO, HttpRoutes[IO]] = {
     val todoRepository = new TodoRepositoryImpl[IO](postgres)
     val todoListRepository = new TodoListRepositoryImpl[IO](postgres)

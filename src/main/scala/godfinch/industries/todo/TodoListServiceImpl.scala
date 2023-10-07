@@ -3,7 +3,7 @@ package godfinch.industries.todo
 import cats.implicits._
 import cats.{Applicative, Monad}
 import godfinch.industries.attention.spanner._
-import godfinch.industries.todo.list.TodoListRepository
+import godfinch.industries.todo.list.{TodoListDb, TodoListRepository}
 import godfinch.industries.todo.todos.TodoRepository
 import godfinch.industries.utils.uuid.{GenUUID, ID}
 import smithy4s.Timestamp
@@ -27,7 +27,7 @@ final class TodoListServiceImpl[F[_]: GenUUID: Monad](todoRepository: TodoReposi
 
   override def deleteTodoList(todoListId: TodoListId): F[Unit] = todoListRepository.deleteTodoList(todoListId)
 
-  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoListRepository.getAllTodoLists.map(GetAllTodoListsResponse(_))
+  override def getAllTodoLists(): F[GetAllTodoListsResponse] = todoListRepository.getAllTodoLists.map(todoListDbs => GetAllTodoListsResponse(todoListDbs.map(_.toTodoListWithId)))
 
   private def todoListExpirationCheck(todoList: TodoListDb): F[Unit] =
     if (Timestamp.nowUTC().isAfter(todoList.expiryDate.value))
@@ -43,7 +43,7 @@ final class TodoListServiceImpl[F[_]: GenUUID: Monad](todoRepository: TodoReposi
       todoListDb <- todoListRepository.getTodoList(id)
       _ <- todoListDb.traverse(todoListExpirationCheck)
       todos    <- todoRepository.getTodos(id)
-      finalTodoList = todoListDb.map(todoList => TodoList(todoList.todoListName, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
+      finalTodoList = todoListDb.map(todoList => TodoList(todoList.name, todoList.expiryDate, todos.map(todoDb => Todo(todoDb.name, todoDb.isCompleted))))
     } yield GetTodoListResponse(finalTodoList)
 
   override def updateTodoList(id: TodoListId, todoList: TodoList): F[Unit] =

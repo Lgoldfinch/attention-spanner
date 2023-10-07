@@ -3,9 +3,10 @@ import smithy4s.codegen.Smithy4sCodegenPlugin.autoImport.smithy4sVersion
 
 //noinspection TypeAnnotation
 object Dependencies {
-  object Version {
+  private object Version {
     val Chimney      = "0.6.1"
     val CirceExtras  = "0.14.1" // version imported by Tapir
+    val Derevo       = "0.13.0"
     val Enumeratum   = "1.7.0"
     val FlywayDb     = "9.11.0"
     val Fs2Circe     = "0.14.0"
@@ -45,6 +46,11 @@ object Dependencies {
     "io.circe" %% "circe-parser",
     "io.circe" %% "circe-refined"
   ).map(_ % Version.CirceExtras)
+
+  val Derevo = List(
+    "tf.tofu" %% "derevo-core",
+    "tf.tofu" %% "derevo-cats",
+  ).map(_ % Version.Derevo)
 
   val DisneyStreaming = List(
     "com.disneystreaming.smithy4s" %% "smithy4s-http4s",

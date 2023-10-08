@@ -1,8 +1,7 @@
 package godfinch.industries.utils.uuid
 
-import derevo.{Derivation, NewTypeRepr}
 import godfinch.industries.attention.spanner.{TodoId, TodoListId}
-import godfinch.industries.todo.list.Stuff.Derive
+import godfinch.industries.todo.list.Derive
 import monocle.Iso
 
 import java.util.UUID

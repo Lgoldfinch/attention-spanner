@@ -1,14 +1,11 @@
 package godfinch.industries.todo.list
 
 import cats.Show
-import derevo.cats.show
-import derevo.{Derivation, NewTypeDerivation, SpecificDerivation, derive}
+import derevo.Derivation
 import godfinch.industries.attention.spanner.{ExpiryDate, TodoListId, TodoListName, TodoListWithId}
-import godfinch.industries.utils.uuid.{Smithy4sNewTypeDerivation, uuid}
+import godfinch.industries.utils.uuid.Smithy4sNewTypeDerivation
 
-import scala.annotation.implicitNotFound
-
-@derive(uuid, show)
+//@derive(uuid, show)
 final case class TodoListDb(
                      id: TodoListId,
                      name: TodoListName,
@@ -17,10 +14,11 @@ final case class TodoListDb(
   def toTodoListWithId: TodoListWithId = TodoListWithId(id, name, expiryDate)
 }
 
-object Stuff {
+object TodoListDb {
   implicit val showTodoDb: Show[TodoListDb] = new Show[TodoListDb] {
     override def show(t: TodoListDb): String = t.toString
   }
+}
 
   trait Derive[F[_]]
     extends Derivation[F]
@@ -31,5 +29,4 @@ object Stuff {
     abstract final class OnlyNewtypes {
       def absurd: Nothing = ???
     }
-  }
 }

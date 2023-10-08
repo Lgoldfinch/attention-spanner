@@ -11,14 +11,13 @@ lazy val IntegrationTest = config("it") extend(Test)
 
 lazy val root = (project in file("."))
   .configs(IntegrationTest)
-  .enablePlugins(AshScriptPlugin, DockerPlugin, ScalaJSPlugin, Smithy4sCodegenPlugin)
+  .enablePlugins(AshScriptPlugin, DockerPlugin, Smithy4sCodegenPlugin)
   .settings(
     name := "attention-spanner",
     dockerExposedPorts ++= Seq(8080),
     dockerUpdateLatest := true,
     dockerBaseImage := "openjdk:11-jre-slim-buster",
     makeBatScripts  := Seq(),
-    scalaJSUseMainModuleInitializer := true,
     Defaults.itSettings,
     IntegrationTest / fork := true,
     libraryDependencies ++=

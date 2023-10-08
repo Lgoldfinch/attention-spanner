@@ -1,11 +1,10 @@
 package godfinch.industries.todo
 
-import cats.MonadThrow
 import cats.effect.IO
 import cats.implicits._
 import godfinch.industries.TestPostgresContainer
-import godfinch.industries.attention.spanner.{TodoList, TodoListDb}
-import godfinch.industries.todo.list.TodoListRepositoryImpl
+import godfinch.industries.attention.spanner.TodoList
+import godfinch.industries.todo.list.{TodoListDb, TodoListRepositoryImpl}
 import godfinch.industries.todo.todos.TodoRepositoryImpl
 import munit.ScalaCheckEffectSuite
 import org.scalacheck.Gen
@@ -26,8 +25,8 @@ class TodoListServiceImplSpec extends TestPostgresContainer with ScalaCheckEffec
             val todoRepositoryService = new TodoListServiceImpl[IO](todoRepository, todoListRepository)
 
             for {
-              _ <- todoRepositoryService.createTodoList(todoList.todoListName, todoList.expiryDate, todos)
-              todoListResult <- todoListRepository.getTodoListByName(todoList.todoListName)
+              _ <- todoRepositoryService.createTodoList(todoList.name, todoList.expiryDate, todos)
+              todoListResult <- todoListRepository.getTodoListByName(todoList.name)
               todosResult <- todoListResult.traverse(todoList => todoRepository.getTodos(todoList.id))
               getTodoNames = todosResult.map(_.map(_.name))
               _ = assertEquals(getTodoNames, Some(todos.map(_.name)))

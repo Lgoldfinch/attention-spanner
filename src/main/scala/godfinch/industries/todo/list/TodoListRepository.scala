@@ -21,6 +21,7 @@ trait TodoListRepository[F[_]] {
 
 final class TodoListRepositoryImpl[F[_]: MonadCancelThrow](postgres: Resource[F, Session[F]]) extends TodoListRepository[F] {
 import TodoListRepositoryImpl._
+
   override def insertTodoList(todoList: TodoListDb): F[Unit] =
         postgres.use(
           _.prepare(insertTodoListCommand).flatMap (
@@ -54,7 +55,7 @@ import TodoListRepositoryImpl._
 
   override def updateTodoList(todoList: TodoListDb): F[Unit] =
     postgres.use(_.prepare(updateTodoListCommand).flatMap(
-      _.execute(todoList.todoListName *: todoList.expiryDate *: todoList.id *: EmptyTuple).void
+      _.execute(todoList.name *: todoList.expiryDate *: todoList.id *: EmptyTuple).void
       )
     )
 }

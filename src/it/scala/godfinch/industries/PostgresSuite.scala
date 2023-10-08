@@ -1,12 +1,10 @@
 package godfinch.industries
 
-import cats.Show
 import cats.effect.{IO, Resource}
 import natchez.Trace.Implicits.noop
 import skunk.implicits.toStringOps
 import skunk.{Command, Session}
 import cats.implicits._
-import godfinch.industries.attention.spanner.TodoListDb
 import godfinch.industries.todo.list.TodoListGenerators._
 import godfinch.industries.todo.list.TodoListRepositoryImpl
 import org.typelevel.log4cats.noop.NoOpLogger

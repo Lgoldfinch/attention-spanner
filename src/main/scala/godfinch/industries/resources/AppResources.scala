@@ -29,11 +29,11 @@ object AppResources {
 
     def mkPostgresResource: Resource[F, Resource[F, Session[F]]] =
       Session.pooled[F](
-        host = "database",
+        host = "localhost",
         port = 5432,
         user = "postgres",
-        database = "postgres",
-        password = Some("example"),
+        database = "attention-spanner-postgres",
+        password = Some("password"),
         max = 16
       ).evalTap(checkPostgresConnection)
 

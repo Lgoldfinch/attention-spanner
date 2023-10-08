@@ -12,7 +12,7 @@ object Main extends IOApp {
 
     for {
       resources <- AppResources.make[IO]
-      sqlMigrator = new SqlMigrator[IO]("jdbc:postgresql://database:5432/postgres")
+      sqlMigrator = new SqlMigrator[IO]("jdbc:postgresql://localhost:5432/postgres")
       _ <- Resource.eval(sqlMigrator.run)
       routes <- Routes.all(resources.postgres)
       _ <- MkHttpServer[IO].newEmber(routes.orNotFound)

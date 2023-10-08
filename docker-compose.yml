@@ -8,10 +8,10 @@ services:
       - "5432:5432"
     volumes:
       - ./data:/var/lib/postgresql/data
-#    environment:
-#       POSTGRES_USER: postgres
-#      - POSTGRES_DB=attention-spanner-postgres
-#       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    environment:
+       POSTGRES_USER: postgres
+       POSTGRES_DB: attention-spanner-postgres
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
   server:
     container_name: attention-spanner

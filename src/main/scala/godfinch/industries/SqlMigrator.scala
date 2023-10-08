@@ -10,7 +10,7 @@ final class SqlMigrator[F[_]: Sync](url: String)(implicit logger: Logger[F]) {
     for {
       _ <- Sync[F].blocking(Flyway
         .configure()
-        .dataSource(url, "postgres", "example")
+        .dataSource(url, "postgres", "password")
         .load()
         .migrate())
       _ <- logger.info("Running the database migrations.") >>

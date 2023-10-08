@@ -16,16 +16,16 @@ object PostgresSuite extends ResourceSuite {
 
   implicit val noopLogger = NoOpLogger[IO]
   override def sharedResource: Resource[IO, Res] = Session.pooled[IO](
-    host = "database",
+    host = "localhost",
     port = 5432,
     user = "postgres",
-    database = "postgres",
-    password = Some("example"),
+    database = "attention-spanner-postgres",
+    password = Some("password"),
     max = 10
   ).beforeAll(_.use(
     s =>
       for {
-//        _ <- new SqlMigrator("jdbc:postgresql://database:5432/postgres").run.void
+        _ <- new SqlMigrator("jdbc:postgresql://database:5432/postgres").run.void
         _ <- flushTables.traverse_(s.execute)
       } yield ()
   ))

@@ -2,10 +2,13 @@
   "name": "attention-spanner",
   "module": "index.ts",
   "type": "module",
-  "devDependencies": {
-    "bun-types": "latest"
-  },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "private": true,
+  "version": "0.0.0",
+  "dependencies": {
+    "source-map-support": "^0.5.21"
+  },
+  "scripts": {}
 }

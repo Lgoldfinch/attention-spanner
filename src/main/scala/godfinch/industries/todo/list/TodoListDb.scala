@@ -5,7 +5,6 @@ import derevo.Derivation
 import godfinch.industries.attention.spanner.{ExpiryDate, TodoListId, TodoListName, TodoListWithId}
 import godfinch.industries.utils.uuid.Smithy4sNewTypeDerivation
 
-//@derive(uuid, show)
 final case class TodoListDb(
                      id: TodoListId,
                      name: TodoListName,
@@ -23,10 +22,10 @@ object TodoListDb {
   trait Derive[F[_]]
     extends Derivation[F]
       with Smithy4sNewTypeDerivation[F] {
-    def instance(implicit ev: OnlyNewtypes): Nothing = ev.absurd
+    def instance(implicit ev: OnlySmithyNewtypes): Nothing = ev.absurd
 
 //    @implicitNotFound("Only newtypes instances can be derived")
-    abstract final class OnlyNewtypes {
+    abstract final class OnlySmithyNewtypes {
       def absurd: Nothing = ???
     }
 }

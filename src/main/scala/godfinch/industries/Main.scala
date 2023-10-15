@@ -11,6 +11,7 @@ object Main extends IOApp {
     implicit val logger: SelfAwareStructuredLogger[IO] = Slf4jLogger.getLogger[IO]
 
     for {
+      _ <- Resource.eval(IO.pure(args)) // discard unused args
       resources <- AppResources.make[IO]
       sqlMigrator = new SqlMigrator[IO]("jdbc:postgresql://localhost:5432/postgres")
       _ <- Resource.eval(sqlMigrator.run)

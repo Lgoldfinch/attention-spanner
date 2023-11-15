@@ -1,9 +1,10 @@
 import sbt.*
+import sbt.Keys.{libraryDependencies, testFrameworks}
 import smithy4s.codegen.Smithy4sCodegenPlugin.autoImport.smithy4sVersion
 
 //noinspection TypeAnnotation
 object Dependencies {
-  private object Version {
+   object Version {
     val Chimney      = "0.6.1"
     val CirceExtras  = "0.14.1" // version imported by Tapir
     val Derevo       = "0.13.0"
@@ -17,6 +18,7 @@ object Dependencies {
     val PostgresJdbc            = "42.5.4" // Flyway needs this
     val PureConfig   = "0.17.4"
     val Skunk        = "0.6.0-RC2"
+    val Scala        = "2.13.9"
 
     // Test
     val MCatsEffectTest        = "1.0.7"
@@ -100,6 +102,24 @@ object Dependencies {
 
   val Skunk = List("org.tpolecat" %% "skunk-core").map(_ % Version.Skunk)
 
+  val backendDependencies = libraryDependencies ++=
+    List.concat(
+      Chimney,
+      CirceExtras,
+      DisneyStreaming.map(_ % smithy4sVersion.value), // mapping cannot be done within Dependencies
+      Derevo,
+      Enumeratum,
+      FlywayDb,
+      Fs2Circe,
+      Http4s,
+      Logging,
+      NewType,
+      Monocle,
+      PureConfig,
+      Refined,
+      Skunk
+    )
+
   val CatsEffectTest = List(
   "org.typelevel" %% "cats-effect-testing-scalatest" % Version.CatsEffectTest
   )
@@ -133,4 +153,6 @@ object Dependencies {
   val KindProjector =
     "org.typelevel" %% "kind-projector" % Version.KindProjector cross CrossVersion.full
   val OrganizeImports = "com.github.liancheng" %% "organize-imports" % Version.OrganizeImports
+
+  val testDependencies = libraryDependencies ++= List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver).map(_ % Test)
 }

@@ -13,10 +13,10 @@ lazy val commonSettings  = {
     scalaVersion := Version.Scala
 }
 
-lazy val shared =
-  (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("modules/shared"))
-    .jsSettings(commonSettings)
-    .jvmSettings(commonSettings)
+//lazy val shared =
+//  (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("modules/shared"))
+//    .jsSettings(commonSettings)
+//    .jvmSettings(commonSettings)
 
 lazy val sharedJvm = shared.jvm
 lazy val sharedJs = shared.js
@@ -47,7 +47,6 @@ lazy val backend = project.in(file("modules/backend"))
       dockerUpdateLatest := true,
       dockerBaseImage := "openjdk:11-jre-slim-buster",
       makeBatScripts  := Seq(),
-      scalaJSUseMainModuleInitializer := true,
       Defaults.itSettings,
       IntegrationTest / fork := true
     )
@@ -60,6 +59,14 @@ lazy val frontend = project.in(file("modules/frontend"))
     // Insert dependencies
     Test / jsEnv := new JSDOMNodeJSEnv()
   ).settings(commonBuildSettings)
+
+lazy val shared = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/shared"))
+//  .jvmSettings(Dependencies.shared)
+//  .jsSettings(Dependencies.shared)
+  .jsSettings(commonBuildSettings)
+  .jvmSettings(commonBuildSettings)
 
 lazy val fastOptCompileCopy = taskKey[Unit]("")
 

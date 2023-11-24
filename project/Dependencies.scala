@@ -4,7 +4,7 @@ import smithy4s.codegen.Smithy4sCodegenPlugin.autoImport.smithy4sVersion
 
 //noinspection TypeAnnotation
 object Dependencies {
-   object Version {
+  object Version {
     val Chimney      = "0.6.1"
     val CirceExtras  = "0.14.1" // version imported by Tapir
     val Derevo       = "0.13.0"
@@ -30,6 +30,10 @@ object Dependencies {
     val ScalaTest              = "3.2.9"
     val ScalaTestPlus          = "3.2.2.0"
     val TestContainersScala    = "0.40.12"
+
+    // Frontend
+    val http4sDom = "0.2.8"
+    val laminar = "0.14.5"
 
     // Plugins
     val BetterMonadicFor = "0.3.1"
@@ -147,6 +151,12 @@ object Dependencies {
     "com.disneystreaming" %% "weaver-cats",
     "com.disneystreaming" %% "weaver-scalacheck"
   ).map(_ % "0.8.3")
+
+  /** Frontend dependencies  */
+
+  val Laminar = "com.raquo"  %%% "laminar"       % Version.laminar
+//  val frontendDependencies = libraryDependencies ++=
+//    List.concat()
 
   /** Plugins */
   val BetterMonadicFor = "com.olegpy" %% "better-monadic-for" % Version.BetterMonadicFor

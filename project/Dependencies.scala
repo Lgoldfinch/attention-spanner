@@ -1,6 +1,7 @@
 import sbt.*
 import sbt.Keys.{libraryDependencies, testFrameworks}
 import smithy4s.codegen.Smithy4sCodegenPlugin.autoImport.smithy4sVersion
+import org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport.*
 
 //noinspection TypeAnnotation
 object Dependencies {
@@ -32,8 +33,8 @@ object Dependencies {
     val TestContainersScala    = "0.40.12"
 
     // Frontend
-    val http4sDom = "0.2.8"
-    val laminar = "0.14.5"
+    val Http4sDom = "0.2.8"
+    val Laminar = "0.14.5"
 
     // Plugins
     val BetterMonadicFor = "0.3.1"
@@ -152,11 +153,17 @@ object Dependencies {
     "com.disneystreaming" %% "weaver-scalacheck"
   ).map(_ % "0.8.3")
 
-  /** Frontend dependencies  */
+  val testDependencies = libraryDependencies ++= List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver).map(_ % Test)
 
-  val Laminar = "com.raquo"  %%% "laminar"       % Version.laminar
-//  val frontendDependencies = libraryDependencies ++=
-//    List.concat()
+  // Frontend Dependencies
+
+  lazy val frontendDependencies =
+    libraryDependencies ++= List(
+      "org.http4s" %%% "http4s-dom" % Version.Http4sDom,
+      "org.http4s" %%% "http4s-client" % Version.Http4s,
+      "org.http4s" %%% "http4s-circe" % Version.Http4s,
+      "com.raquo" %%% "laminar" % Version.Laminar
+      )
 
   /** Plugins */
   val BetterMonadicFor = "com.olegpy" %% "better-monadic-for" % Version.BetterMonadicFor
@@ -164,5 +171,4 @@ object Dependencies {
     "org.typelevel" %% "kind-projector" % Version.KindProjector cross CrossVersion.full
   val OrganizeImports = "com.github.liancheng" %% "organize-imports" % Version.OrganizeImports
 
-  val testDependencies = libraryDependencies ++= List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver).map(_ % Test)
 }

@@ -13,6 +13,19 @@ lazy val commonSettings  = {
     scalaVersion := Version.Scala
 }
 
+/** Frontend dependencies  */
+
+//lazy val frontendDependencies = Seq(
+//  libraryDependencies ++=
+//    Seq(
+//      "org.http4s" %%% "http4s-client" % Version.Http4s,
+//      "org.http4s" %%% "http4s-circe" % Version.Http4s,
+//      "org.http4s" %%% "http4s-dom" % Version.Http4sDom,
+//      "com.raquo" %%% "laminar" % Version.Laminar
+//    )
+//)
+
+
 //lazy val shared =
 //  (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("modules/shared"))
 //    .jsSettings(commonSettings)

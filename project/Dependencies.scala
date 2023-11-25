@@ -155,7 +155,7 @@ object Dependencies {
 
   val testDependencies = libraryDependencies ++= List.concat(MCatsEffectTest, CatsEffectTest, MunitTest, ScalaCheckMunit, TestContainersScala, Weaver).map(_ % Test)
 
-  // Frontend Dependencies
+  /** Frontend dependencies  */
 
   lazy val frontendDependencies =
     libraryDependencies ++= List(
@@ -164,6 +164,12 @@ object Dependencies {
       "org.http4s" %%% "http4s-circe" % Version.Http4s,
       "com.raquo" %%% "laminar" % Version.Laminar
       )
+
+  /** Shared dependencies  */
+
+  lazy val sharedDependencies = Def.settings(
+    libraryDependencies += "io.circe" %%% "circe-core" % Version.CirceExtras
+  )
 
   /** Plugins */
   val BetterMonadicFor = "com.olegpy" %% "better-monadic-for" % Version.BetterMonadicFor

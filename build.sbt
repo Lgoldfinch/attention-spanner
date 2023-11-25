@@ -13,34 +13,23 @@ lazy val commonSettings  = {
     scalaVersion := Version.Scala
 }
 
-/** Frontend dependencies  */
-
-//lazy val frontendDependencies = Seq(
-//  libraryDependencies ++=
-//    Seq(
-//      "org.http4s" %%% "http4s-client" % Version.Http4s,
-//      "org.http4s" %%% "http4s-circe" % Version.Http4s,
-//      "org.http4s" %%% "http4s-dom" % Version.Http4sDom,
-//      "com.raquo" %%% "laminar" % Version.Laminar
-//    )
-//)
-
-
-//lazy val shared =
-//  (crossProject(JSPlatform, JVMPlatform).crossType(CrossType.Pure) in file("modules/shared"))
-//    .jsSettings(commonSettings)
-//    .jvmSettings(commonSettings)
+lazy val shared = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/shared"))
+  .jvmSettings(Dependencies.sharedDependencies)
+  .jsSettings(Dependencies.sharedDependencies)
+  .jsSettings(commonBuildSettings)
+  .jvmSettings(commonBuildSettings)
 
 lazy val sharedJvm = shared.jvm
 lazy val sharedJs = shared.js
 
 lazy val root =
-  project.in(file(".")).aggregate(frontend, backend, shared.js, shared.jvm)
+  project.in(file(".")).aggregate(frontend, backend, sharedJs, sharedJvm)
 
 lazy val backend = project.in(file("modules/backend"))
   .dependsOn(sharedJvm)
   .settings(commonBuildSettings)
-//  .settings(commonSettings)
   .settings(
     backendDependencies,
     testDependencies,
@@ -66,20 +55,13 @@ lazy val backend = project.in(file("modules/backend"))
 
 lazy val frontend = project.in(file("modules/frontend"))
   .enablePlugins(ScalaJSPlugin)
-  .dependsOn(shared.js)
+  .dependsOn(sharedJs)
   .settings(scalaJSUseMainModuleInitializer := true)
   .settings(
-    // Insert dependencies
+    Dependencies.frontendDependencies,
+    Dependencies.testDependencies,
     Test / jsEnv := new JSDOMNodeJSEnv()
   ).settings(commonBuildSettings)
-
-lazy val shared = crossProject(JSPlatform, JVMPlatform)
-  .crossType(CrossType.Pure)
-  .in(file("modules/shared"))
-//  .jvmSettings(Dependencies.shared)
-//  .jsSettings(Dependencies.shared)
-  .jsSettings(commonBuildSettings)
-  .jvmSettings(commonBuildSettings)
 
 lazy val fastOptCompileCopy = taskKey[Unit]("")
 

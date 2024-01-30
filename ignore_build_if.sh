@@ -2,7 +2,7 @@
 
 # Define your GitHub repository details
 repo_owner="Lgoldfinch"
-repo_name="attention_spanner"
+repo_name="attention-spanner"
 file_path=".scalafmt.conf"
 commit_sha="$1"
 github_token="$2"

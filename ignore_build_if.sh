@@ -17,6 +17,7 @@ api_url="https://api.github.com/repos/$repo_owner/$repo_name/compare/$commit_sha
 # Get the file details from the GitHub API
 file_details=$(curl -s -H "Authorization: token $github_token" $api_url | grep -o "\"filename\":\"$file_path\",\".*\"status\":\"[a-z]*\"" | head -1)
 
+echo
 # Check if the file exists in the comparison result
 if [ ! -z "$file_details" ]; then
     # Extract the file status using string manipulation

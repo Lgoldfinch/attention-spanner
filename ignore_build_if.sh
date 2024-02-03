@@ -16,10 +16,11 @@ api_url="https://api.github.com/repos/Lgoldfinch/attention-spanner/commits/$comm
 # Get the file details from the GitHub API
 
 #echo "$commit_compare_result"
+gitResponse=$(curl -s -H "Authorization: token $github_token" $api_url)
 
-fileName=$(curl -s -H "Authorization: token $github_token" $api_url | jq -r '.files.[].filename')
-fileLength=$(curl -s -H "Authorization: token $github_token" $api_url | jq -r '.files' | jq 'length')
-fileStatus=$(curl -s -H "Authorization: token $github_token" $api_url | jq -r '.files.[].status')
+fileName=$(echo $gitResponse | jq -r '.files.[].filename')
+fileLength=$(echo $gitResponse | jq -r '.files' | jq 'length')
+fileStatus=$(echo $gitResponse | jq -r '.files.[].status')
 
 echo "$fileName"
 echo "$file_path"
@@ -27,7 +28,7 @@ echo "$fileLength"
 echo "$fileStatus"
 #res=$(curl -s -H "Authorization: token $github_token" $api_url)
 
-if [ "$fileName" == "$file_path" ]
+if [ "$fileName" == "$file_path" ] && [ "$fileStatus" == "modified" ] && [ "$fileLength" == 1 ]
 then
   echo hello
 fi

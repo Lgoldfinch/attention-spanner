@@ -13,4 +13,3 @@ val r = requests.get(apiUrl, headers = Map("Authorization" -> s"token: $githubTo
 println(r.text())
 // scala-cli run scripts/ignoreBuildIf.sc -- Lgoldfinch attention-spanner .scalafmt.conf
 //926f255...HEAD
-// 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"
